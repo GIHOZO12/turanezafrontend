@@ -75,6 +75,10 @@ const InvestorLayout = ({ active = 'dashboard', children, headerActions = null }
         }
       } catch (error) {
         if (mounted) {
+          if (error.status === 401 || error.status === 403) {
+            navigate('/auth', { replace: true, state: { from: location.pathname } });
+            return;
+          }
           setUserError(error.message || 'Unable to load profile');
           setUser(null);
         }
@@ -177,13 +181,17 @@ const InvestorLayout = ({ active = 'dashboard', children, headerActions = null }
           const response = await fetchCurrentUser();
           setUser(response);
         } catch (err) {
+          if (err.status === 401 || err.status === 403) {
+            navigate('/auth', { replace: true, state: { from: location.pathname } });
+            return;
+          }
           setUserError(err.message || 'Unable to load profile');
         } finally {
           setLoadingUser(false);
         }
       },
     }),
-    [handleLogout, user, loadingUser, userError],
+    [handleLogout, user, loadingUser, userError, navigate, location.pathname],
   );
 
   return (
