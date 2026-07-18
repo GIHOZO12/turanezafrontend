@@ -13,43 +13,31 @@ const inferLocalApiBase = () => {
 };
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || inferLocalApiBase();
+const REFRESH_PATH = '/api/v1/users/token/refresh/';
 
-const getCsrfToken = () => {
-  if (typeof document === 'undefined') {
-    return null;
-  }
-  const match = document.cookie.match(/csrftoken=([^;]+)/);
-  return match ? match[1] : null;
+const ACCESS_TOKEN_KEY = 'access_token';
+const REFRESH_TOKEN_KEY = 'refresh_token';
+
+export const getAccessToken = () => localStorage.getItem(ACCESS_TOKEN_KEY);
+export const getRefreshToken = () => localStorage.getItem(REFRESH_TOKEN_KEY);
+
+export const setTokens = ({ access, refresh } = {}) => {
+  if (access) localStorage.setItem(ACCESS_TOKEN_KEY, access);
+  if (refresh) localStorage.setItem(REFRESH_TOKEN_KEY, refresh);
+};
+
+export const clearTokens = () => {
+  localStorage.removeItem(ACCESS_TOKEN_KEY);
+  localStorage.removeItem(REFRESH_TOKEN_KEY);
 };
 
 const http = axios.create({
   baseURL: API_BASE_URL,
-  withCredentials: true,
   timeout: 10000,
   headers: {
     Accept: 'application/json',
   },
 });
-
-let csrfBootstrapPromise = null;
-
-const ensureCsrfCookie = async () => {
-  if (getCsrfToken()) {
-    return;
-  }
-  if (!csrfBootstrapPromise) {
-    csrfBootstrapPromise = http
-      .get('/api/v1/users/csrf/')
-      .catch((error) => {
-        csrfBootstrapPromise = null;
-        throw error;
-      })
-      .then(() => {
-        csrfBootstrapPromise = null;
-      });
-  }
-  await csrfBootstrapPromise;
-};
 
 const extractErrorMessage = (data) => {
   if (!data) {
@@ -78,58 +66,106 @@ const extractErrorMessage = (data) => {
   return null;
 };
 
+const toError = (error) => {
+  if (error.response) {
+    const { status, data } = error.response;
+    const message = extractErrorMessage(data) || 'Unexpected error. Please try again.';
+    const normalisedError = new Error(message);
+    normalisedError.status = status;
+    normalisedError.payload = data;
+    return normalisedError;
+  }
+
+  const message =
+    error.request?.status === 0
+      ? 'Network error. Please check your connection.'
+      : error.message || 'Unexpected error. Please try again.';
+  const normalisedError = new Error(message);
+  normalisedError.status = error.request?.status;
+  normalisedError.payload = null;
+  return normalisedError;
+};
+
+// Refresh-token rotation is enabled server-side: every call to REFRESH_PATH
+// invalidates the refresh token sent and returns a new one. If several
+// requests 401 at once, they must all await the SAME refresh call rather than
+// each spending (and invalidating) the refresh token independently.
+let refreshPromise = null;
+
+const refreshAccessToken = () => {
+  if (!refreshPromise) {
+    const refreshToken = getRefreshToken();
+    refreshPromise = http
+      .post(REFRESH_PATH, { refresh: refreshToken })
+      .then((response) => {
+        setTokens(response.data);
+        return response.data;
+      })
+      .catch((error) => {
+        clearTokens();
+        throw error;
+      })
+      .finally(() => {
+        refreshPromise = null;
+      });
+  }
+  return refreshPromise;
+};
+
 export const apiRequest = async (path, options = {}) => {
-  const { headers: customHeaders, body, credentials, ...rest } = options;
+  const { headers: customHeaders, body, ...rest } = options;
   const isFormData = typeof FormData !== 'undefined' && body instanceof FormData;
 
-  const config = {
-    url: path,
-    method: rest.method || 'GET',
-    headers: {
-      ...http.defaults.headers.common,
-      ...customHeaders,
-    },
-    ...rest,
+  const buildConfig = () => {
+    const config = {
+      url: path,
+      method: rest.method || 'GET',
+      headers: {
+        ...http.defaults.headers.common,
+        ...customHeaders,
+      },
+      ...rest,
+    };
+
+    if (isFormData && body) {
+      config.data = body;
+      delete config.headers['Content-Type'];
+    } else if (typeof body !== 'undefined' && body !== null) {
+      config.data = body;
+      if (!config.headers['Content-Type']) {
+        config.headers['Content-Type'] = 'application/json';
+      }
+    }
+
+    // Don't override an explicit Authorization header a caller already set
+    // (e.g. the super-admin panel's separate Basic-Auth mechanism).
+    if (!config.headers.Authorization) {
+      const accessToken = getAccessToken();
+      if (accessToken) {
+        config.headers.Authorization = `Bearer ${accessToken}`;
+      }
+    }
+
+    return config;
   };
 
-  if (isFormData && body) {
-    config.data = body;
-    delete config.headers['Content-Type'];
-  } else if (typeof body !== 'undefined' && body !== null) {
-    config.data = body;
-    if (!config.headers['Content-Type']) {
-      config.headers['Content-Type'] = 'application/json';
-    }
-  }
-
-  if (!/^(get|head|options|trace)$/i.test(config.method)) {
-    await ensureCsrfCookie();
-    const csrfToken = getCsrfToken();
-    if (csrfToken) {
-      config.headers['X-CSRFToken'] = csrfToken;
-    }
-  }
+  const config = buildConfig();
+  const wasBearerAuthed = Boolean(config.headers.Authorization?.startsWith('Bearer ')) && path !== REFRESH_PATH;
 
   try {
     const response = await http(config);
     return response.data;
   } catch (error) {
-    if (error.response) {
-      const { status, data } = error.response;
-      const message = extractErrorMessage(data) || 'Unexpected error. Please try again.';
-      const normalisedError = new Error(message);
-      normalisedError.status = status;
-      normalisedError.payload = data;
-      throw normalisedError;
+    const status = error.response?.status;
+    if (status === 401 && wasBearerAuthed && getRefreshToken()) {
+      try {
+        await refreshAccessToken();
+        const retryResponse = await http(buildConfig());
+        return retryResponse.data;
+      } catch (retryError) {
+        throw toError(retryError);
+      }
     }
-
-    const message =
-      error.request?.status === 0
-        ? 'Network error. Please check your connection.'
-        : error.message || 'Unexpected error. Please try again.';
-    const normalisedError = new Error(message);
-    normalisedError.status = error.request?.status;
-    normalisedError.payload = null;
-    throw normalisedError;
+    throw toError(error);
   }
 };

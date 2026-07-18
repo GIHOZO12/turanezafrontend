@@ -153,11 +153,14 @@ const InvestorLayout = ({ active = 'dashboard', children, headerActions = null }
     setLoggingOut(true);
     try {
       await logoutUser();
-      setUser(null);
-      navigate('/auth', { replace: true });
     } catch (error) {
+      // Best-effort server-side revocation; local tokens are already cleared
+      // by logoutUser() regardless, so don't let this trap the user in a
+      // logged-in-looking state.
       setLogoutError(error.message || 'Unable to log out right now.');
     } finally {
+      setUser(null);
+      navigate('/auth', { replace: true });
       setLoggingOut(false);
       setMenuOpen(false);
       setMobileNavOpen(false);
