@@ -546,7 +546,7 @@ const AuthPage = () => {
 
   const handleGoogleAuth = () => {
     const base = import.meta.env.VITE_API_BASE_URL || "";
-    window.location.href = `${base}/api/v1/users/google/`;
+    window.location.href = `${base}/api/v1/users/google/login`;
   };
 
   useEffect(() => {
