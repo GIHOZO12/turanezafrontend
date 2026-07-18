@@ -129,7 +129,7 @@ const DashboardPage = () => {
   const handleQuickAction = (action) => {
     setPayError(null);
     if (action.requiresDeposit && !depositPaid) {
-      setActionMessage('Settle the refundable $100,000 commitment fee to unlock this action.');
+      setActionMessage('Settle the RWF 100,000 commitment fee to unlock this action.');
       return;
     }
     if (action.requiresInvestor && !eligibleForInvestorActions) {
@@ -140,27 +140,7 @@ const DashboardPage = () => {
     action.onClick();
   };
 
-  const handleDeposit = async (provider = 'stripe') => {
-    setPayError(null);
-    setPaying(true);
-    try {
-      const origin = typeof window !== 'undefined' ? window.location.origin : '';
-      const { checkout_url: url } = await createDepositCheckout({
-        provider,
-        successUrl: `${origin}/dashboard`,
-        cancelUrl: `${origin}/dashboard`,
-      });
-      if (url) {
-        window.location.href = url;
-      } else {
-        setPayError('Unable to start checkout right now.');
-      }
-    } catch (err) {
-      setPayError(err.message || 'Unable to start checkout right now.');
-    } finally {
-      setPaying(false);
-    }
-  };
+  
 
   const quickActions = [
     {
@@ -175,18 +155,8 @@ const DashboardPage = () => {
       requiresDeposit: false,
       onClick: () => navigate('/plots'),
     },
-    {
-      label: 'Pay $100,000 Deposit',
-      requiresInvestor: false,
-      requiresDeposit: false,
-      onClick: () => handleDeposit('stripe'),
-    },
-    {
-      label: 'Pay $100,000 Deposit (Flutterwave)',
-      requiresInvestor: false,
-      requiresDeposit: false,
-      onClick: () => handleDeposit('flutterwave'),
-    },
+    
+    
   ];
 
   return (
@@ -235,13 +205,7 @@ const DashboardPage = () => {
               {!depositPaid ? <span className="text-white/80">Pay within 30 days to unlock investor actions.</span> : null}
             </div>
             <div className="mt-6 flex flex-wrap gap-4">
-              {/* <
-                type="button"
-                onClick={() => handleQuickAction(quickActions[0])}
-                className="inline-flex items-center justify-center rounded-pill bg-white px-5 py-2 text-sm font-semibold text-primary shadow-sm transition duration-cozy ease-cozy hover:bg-white/90"
-              >
-                {/* Create New Group */}
-              
+             
               <button
                 type="button"
                 onClick={() => handleQuickAction(quickActions[1])}
@@ -251,22 +215,8 @@ const DashboardPage = () => {
               </button>
               {!depositPaid ? (
                 <div className="flex flex-wrap gap-3">
-                  <button
-                    type="button"
-                    onClick={() => handleQuickAction(quickActions[2])}
-                    disabled={paying}
-                    className="inline-flex items-center justify-center rounded-pill bg-sunshine px-5 py-2 text-sm font-semibold text-slate-900 shadow-sm transition duration-cozy ease-cozy hover:-translate-y-0.5 hover:bg-sunshine/90 disabled:cursor-not-allowed disabled:opacity-70"
-                  >
-                    {paying ? 'Starting checkout...' : 'Pay with Card (Stripe)'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleDeposit('flutterwave')}
-                    disabled={paying}
-                    className="inline-flex items-center justify-center rounded-pill border border-white/60 px-4 py-2 text-xs font-semibold text-white transition duration-cozy ease-cozy hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-70"
-                  >
-                    {paying ? '...' : 'Pay with Local Phone (Flutterwave)'}
-                  </button>
+                  
+                  
                 </div>
               ) : (
                 <span className="inline-flex items-center rounded-pill bg-emerald-500/20 px-4 py-2 text-xs font-semibold text-emerald-50">
@@ -300,7 +250,7 @@ const DashboardPage = () => {
                   Required: {formatCurrency(depositInfo.requiredAmountRwf)} ·{' '}
                   {depositPaid
                     ? `On file: ${formatAmounts(depositInfo.totals)}`
-                    : 'Secure the refundable $100,000 deposit to unlock investments.'}
+                    : 'Pay commitment fee.'}
                 </span>
               </div>
             </div>
@@ -594,21 +544,10 @@ const DashboardPage = () => {
             </div>
 
             <div className="rounded-3xl bg-white p-6 shadow-card">
-              <p className="text-base font-semibold text-slate-900">Quick Actions</p>
-              <p className="mt-1 text-sm text-slate-500">
-                Jump into frequent tools. Items will unlock as more modules go live.
-              </p>
+              
+              
               <div className="mt-4 space-y-3">
-                {quickActions.map((action) => (
-                  <button
-                    key={action.label}
-                    type="button"
-                    onClick={() => handleQuickAction(action)}
-                    className="w-full rounded-pill bg-primary/10 px-4 py-2 text-left text-sm font-semibold text-primary transition duration-cozy ease-cozy hover:bg-primary/20"
-                  >
-                    {action.label}
-                  </button>
-                ))}
+                
               </div>
             </div>
           </aside>

@@ -250,7 +250,7 @@ const GroupApplicationModal = ({ open, group, submitting, onClose, onSubmit }) =
             </h2>
             <p className="mt-2 text-sm text-slate-500">
               Submit this application to collaborate with fellow investors. Once approved you will receive an email with
-              the refundable $100,000 application fee instructions and access to group chat, governance, and dashboards.
+              the RWF 100,000 commitment fee instructions and access to group chat, governance, and dashboards.
             </p>
           </div>
           <button
@@ -424,7 +424,7 @@ const GroupApplicationModal = ({ open, group, submitting, onClose, onSubmit }) =
               </div>
               <div>
                 <p className="text-sm font-semibold text-slate-900">
-                  Have you already paid the refundable $100,000 application fee?
+                  Have you already paid the RWF 100,000 commitment fee?
                 </p>
                 {renderRadioGroup('applicationFeePaid', form.applicationFeePaid, yesNoOptions)}
                 <p className="mt-2 text-xs text-slate-500">

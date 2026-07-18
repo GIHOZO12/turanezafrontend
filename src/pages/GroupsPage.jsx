@@ -327,7 +327,7 @@ const GroupsPage = () => {
               and collaborate with accredited investors across Kigali and
               secondary cities.
               <br /> <br />
-                  Members who pay the refundable $100,000 commitment fee are
+                  Members who pay the RWF 100,000 commitment fee are
               recognised as aspiring investors, and receive onboarding emails
               automatically. They will be able to join any group that fits their
               investment thesis and capacity, and access the dedicated chat and
@@ -359,7 +359,7 @@ const GroupsPage = () => {
 
         {!depositPaid ? (
           <div className="mt-6 rounded-3xl border border-amber-200 bg-amber-50 px-4 py-4 text-sm text-amber-800">
-                If your refundable $100,000 commitment deposit has already been
+                If your RWF 100,000 commitment deposit has already been
             paid but is not yet reflected, you can still continue with your
             group application while the team verifies it.
           </div>
@@ -466,8 +466,8 @@ const GroupsPage = () => {
                   prefer.
                 </li>
                 <li>
-                  2. Upload proof of funds and confirm the refundable $100,000
-                  application fee.
+                  2. Upload proof of funds and confirm the RWF 100,000
+                  commitment fee.
                 </li>
                 <li>
                   3. On approval you will receive an email confirmation and

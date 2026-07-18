@@ -40,7 +40,7 @@ const CreateGroupModal = ({ open, onClose, onProceed, userRole }) => {
             <ul className="mt-3 space-y-2 text-xs text-slate-600">
               <li>Define the impact or portfolio focus you want the group to pursue.</li>
               <li>Confirm you can coordinate onboarding calls and updates with other members.</li>
-                  <li>Review the refundable $100,000 commitment and timeline expectations with the UEG team.</li>
+                  <li>Review the RWF 100,000 commitment and timeline expectations with the UEG team.</li>
             </ul>
           </div>
           <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">

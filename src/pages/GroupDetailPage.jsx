@@ -17,7 +17,6 @@ import DesignAssetManager from '../components/DesignAssetManager';
 import DesignAssetLightbox from '../components/DesignAssetLightbox';
 import GroupApplicationModal from '../components/GroupApplicationModal';
 import GroupDocumentManager from '../components/GroupDocumentManager';
-import GroupPlanAssistant from '../components/GroupPlanAssistant';
 import { formatCurrency } from '../utils/currency';
 
 const formatCurrencyBuckets = (buckets) => {
@@ -794,7 +793,7 @@ const GroupDetailPage = () => {
               <div className="rounded-2xl bg-white px-4 py-3 text-xs text-slate-500 shadow-inner">
                 <p>
                   Minimum commitment per investor: <span className="font-semibold text-slate-900">{minInvestmentLabel}</span>.
-                    A separate $100,000 refundable onboarding fee is still due within 15 days of approval to unlock investor
+                    A separate RWF 100,000 commitment fee is still due within 15 days of approval to unlock investor
                   status, dashboard access, and chat invitations.
                 </p>
               </div>
@@ -1225,8 +1224,6 @@ const GroupDetailPage = () => {
               })}
             </div>
           ) : null}
-
-          <GroupPlanAssistant groupId={group?.id} canUse={isMember} />
         </section>
 
         <section className="mt-12 space-y-6">

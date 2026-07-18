@@ -125,7 +125,7 @@ const PayCommitmentFeePage = () => {
         <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary">Join request #{application.application_number?.slice(0, 8)}</p>
         <h1 className="mt-2 text-2xl font-semibold text-slate-900">Pay your commitment fee</h1>
         <p className="mt-2 text-sm text-slate-600">
-          Before your request can be reviewed, please pay the refundable commitment fee via mobile money and upload proof
+          Before your request can be reviewed, please pay the commitment fee via mobile money and upload proof
           of payment below.
         </p>
 

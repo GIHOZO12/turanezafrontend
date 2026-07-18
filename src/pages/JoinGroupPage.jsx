@@ -340,7 +340,7 @@ const JoinGroupPage = () => {
             </p>
             {!depositPaid ? (
               <p className="mt-2 text-sm font-semibold text-amber-700">
-                  If your refundable $100,000 commitment deposit is still under review, you can continue with this application and the team will verify it.
+                  If your RWF 100,000 commitment deposit is still under review, you can continue with this application and the team will verify it.
               </p>
             ) : null}
           </div>
@@ -563,7 +563,7 @@ const JoinGroupPage = () => {
                   onChange={handleChange}
                   className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary"
                 />
-                    I understand the refundable $100,000 onboarding fee.
+                    I understand the RWF 100,000 commitment fee.
               </label>
               <label className="flex items-center gap-3">
                 <input
@@ -764,7 +764,7 @@ const JoinGroupPage = () => {
               <p className="text-sm font-semibold text-slate-900">What happens next?</p>
               <ol className="mt-2 space-y-2">
                 <li>1. The admin and UEG team review your documentation.</li>
-                    <li>2. You will be asked to pay the refundable $100,000 onboarding fee.</li>
+                    <li>2. You will be asked to pay the RWF 100,000 commitment fee.</li>
                 <li>3. On approval you receive chat access, governance tools, and investor status.</li>
               </ol>
             </div>
