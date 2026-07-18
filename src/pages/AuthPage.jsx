@@ -334,6 +334,8 @@ const AuthPage = () => {
   const verificationInputRef = useRef(null);
   const googleButtonRef = useRef(null);
   const googleScriptLoadedRef = useRef(false);
+  const googleInitializedRef = useRef(false);
+  const googleCredentialCallbackRef = useRef(null);
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
   useEffect(() => {
@@ -551,7 +553,10 @@ const AuthPage = () => {
 
   useEffect(() => {
     if (mode === "reset" || !googleClientId) return;
-    const handleGoogleCredential = async (response) => {
+    // Google logs a warning if initialize() is called more than once, so we
+    // only ever call it once (tracked via googleInitializedRef) and route the
+    // credential callback through a ref that always reflects the latest mode.
+    googleCredentialCallbackRef.current = async (response) => {
       if (!response?.credential) return setFeedback({ type: "error", message: "Google sign-in did not return a credential." });
       setFeedback(null);
       setFormLoading(true);
@@ -569,7 +574,14 @@ const AuthPage = () => {
 
     const renderGoogleButton = () => {
       if (!window.google?.accounts?.id || !googleButtonRef.current) return;
-      window.google.accounts.id.initialize({ client_id: googleClientId, callback: handleGoogleCredential, auto_select: false });
+      if (!googleInitializedRef.current) {
+        window.google.accounts.id.initialize({
+          client_id: googleClientId,
+          callback: (response) => googleCredentialCallbackRef.current?.(response),
+          auto_select: false,
+        });
+        googleInitializedRef.current = true;
+      }
       googleButtonRef.current.innerHTML = "";
       window.google.accounts.id.renderButton(googleButtonRef.current, {
         theme: "outline", size: "large", shape: "pill", text: mode === "signup" ? "signup_with" : "signin_with", width: 360,
