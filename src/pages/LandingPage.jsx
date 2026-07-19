@@ -5,8 +5,9 @@ import {
   submitLandingInvestmentInterest,
 } from "../api/superadmin";
 import { fetchCurrentUser, logoutUser } from "../api/users";
+import { fetchProjects } from "../api/projects";
+import { formatCurrency } from "../utils/currency";
 import {
-  housingOptions,
   navigationLinks,
   storyHighlights,
   testimonials,
@@ -76,6 +77,8 @@ const LandingPage = () => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
   const [langMenuOpen, setLangMenuOpen] = useState(false);
+  const [latestProjects, setLatestProjects] = useState([]);
+  const [loadingProjects, setLoadingProjects] = useState(true);
   const userMenuRef = useRef(null);
   const langMenuRef = useRef(null);
   const { language, languages, setLanguage } = usePreferences();
@@ -96,6 +99,30 @@ const LandingPage = () => {
       .finally(() => {
         if (mounted) {
           setLoadingUser(false);
+        }
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    fetchProjects({ ordering: "-created_at" })
+      .then((response) => {
+        if (!mounted) return;
+        const list = Array.isArray(response?.results) ? response.results : Array.isArray(response) ? response : [];
+        const sorted = [...list].sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+        setLatestProjects(sorted.slice(0, 3));
+      })
+      .catch(() => {
+        if (mounted) {
+          setLatestProjects([]);
+        }
+      })
+      .finally(() => {
+        if (mounted) {
+          setLoadingProjects(false);
         }
       });
     return () => {
@@ -741,56 +768,78 @@ const LandingPage = () => {
                   Explore All Projects
                 </a>
               </div>
-              <div className="mt-12 grid gap-8 lg:grid-cols-3">
-                {housingOptions.map((housing) => (
-                  <article
-                    key={housing.name}
-                    className="group flex flex-col overflow-hidden rounded-card bg-porcelain shadow-card transition duration-cozy ease-cozy hover:-translate-y-1 hover:shadow-2xl"
-                  >
+              {loadingProjects ? (
+                <div className="mt-12 grid gap-8 lg:grid-cols-3">
+                  {[0, 1, 2].map((placeholder) => (
                     <div
-                      className="relative h-56 w-full overflow-hidden"
-                      style={{ backgroundImage: `url('${housing.image}')` }}
+                      key={placeholder}
+                      className="h-96 animate-pulse rounded-card bg-porcelain"
+                    />
+                  ))}
+                </div>
+              ) : latestProjects.length ? (
+                <div className="mt-12 grid gap-8 lg:grid-cols-3">
+                  {latestProjects.map((project) => (
+                    <article
+                      key={project.id}
+                      className="group flex flex-col overflow-hidden rounded-card bg-porcelain shadow-card transition duration-cozy ease-cozy hover:-translate-y-1 hover:shadow-2xl"
                     >
-                      <div className="absolute inset-0 bg-gradient-to-tr from-slate-900/60 via-slate-900/20 to-transparent transition duration-cozy ease-cozy group-hover:opacity-80" />
-                    </div>
-                    <div className="flex flex-1 flex-col gap-4 p-6">
-                      <span className="inline-flex w-fit items-center gap-2 rounded-pill bg-mint/20 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-mint">
-                        {housing.status}
-                      </span>
-                      <h3 className="text-xl font-semibold text-slate-900">
-                        {housing.name}
-                      </h3>
-                      <p className="font-serif text-sm text-slate-600">
-                        {housing.description}
-                      </p>
-                      <div className="mt-auto grid gap-3 rounded-card bg-white p-4 text-sm text-slate-600">
-                        <div className="flex items-center justify-between">
-                          <span className="font-semibold text-slate-500">
-                            Investors
-                          </span>
-                          <span className="font-medium text-slate-900">
-                            {housing.metrics.investors}
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between border-t border-slate-100 pt-3">
-                          <span className="font-semibold text-slate-500">
-                            Returns
-                          </span>
-                          <span className="font-medium text-primary">
-                            {housing.metrics.returns}
-                          </span>
-                        </div>
+                      <div className="relative h-56 w-full overflow-hidden bg-slate-200">
+                        {project.featured_image ? (
+                          <div
+                            className="h-full w-full bg-cover bg-center"
+                            style={{ backgroundImage: `url('${project.featured_image}')` }}
+                          />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
+                            Image coming soon
+                          </div>
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-tr from-slate-900/60 via-slate-900/20 to-transparent transition duration-cozy ease-cozy group-hover:opacity-80" />
                       </div>
-                      <Link
-                        to={`/housing/${housing.slug}`}
-                        className="inline-flex items-center justify-center rounded-pill border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition duration-cozy ease-cozy hover:border-primary/60 hover:text-primary"
-                      >
-                        View details
-                      </Link>
-                    </div>
-                  </article>
-                ))}
-              </div>
+                      <div className="flex flex-1 flex-col gap-4 p-6">
+                        <span className="inline-flex w-fit items-center gap-2 rounded-pill bg-mint/20 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-mint">
+                          {project.group_name ? `${project.group_name} group` : project.status || "In progress"}
+                        </span>
+                        <h3 className="text-xl font-semibold text-slate-900">
+                          {project.name}
+                        </h3>
+                        <p className="font-serif text-sm text-slate-600">
+                          {project.summary || project.location}
+                        </p>
+                        <div className="mt-auto grid gap-3 rounded-card bg-white p-4 text-sm text-slate-600">
+                          <div className="flex items-center justify-between">
+                            <span className="font-semibold text-slate-500">
+                              Funding goal
+                            </span>
+                            <span className="font-medium text-slate-900">
+                              {formatCurrency(project.funding_goal, project.currency)}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between border-t border-slate-100 pt-3">
+                            <span className="font-semibold text-slate-500">
+                              Target ROI
+                            </span>
+                            <span className="font-medium text-primary">
+                              {project.target_roi_percent ? `${Number(project.target_roi_percent)}%` : "TBD"}
+                            </span>
+                          </div>
+                        </div>
+                        <Link
+                          to="/groups"
+                          className="inline-flex items-center justify-center rounded-pill border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition duration-cozy ease-cozy hover:border-primary/60 hover:text-primary"
+                        >
+                          View details
+                        </Link>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <div className="mt-12 rounded-card bg-porcelain p-10 text-center text-sm text-slate-500">
+                  New co-investment projects are being added — check back soon.
+                </div>
+              )}
             </div>
           </section>
 

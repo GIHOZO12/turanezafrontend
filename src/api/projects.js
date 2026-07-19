@@ -3,8 +3,8 @@ import { toQueryString } from './utils';
 
 const PROJECTS_ROOT = '/api/v1/projects';
 
-export const fetchProjects = () =>
-  apiRequest(`${PROJECTS_ROOT}/projects/`, {
+export const fetchProjects = (params = {}) =>
+  apiRequest(`${PROJECTS_ROOT}/projects/${toQueryString(params)}`, {
     method: 'GET',
   });
 
