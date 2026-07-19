@@ -15,25 +15,25 @@ const inferLocalApiBase = () => {
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || inferLocalApiBase();
 const REFRESH_PATH = '/api/v1/users/token/refresh/';
 
-const ACCESS_TOKEN_KEY = 'access_token';
-const REFRESH_TOKEN_KEY = 'refresh_token';
+// The access token lives in memory only (never localStorage/cookies) to
+// minimise what a generic XSS payload can exfiltrate. It's lost on page
+// reload by design; apiRequest() transparently restores it via the httpOnly
+// refresh cookie (which JS can never read directly) on the first request
+// after a reload — see eligibleForRefresh below.
+let inMemoryAccessToken = null;
 
-export const getAccessToken = () => localStorage.getItem(ACCESS_TOKEN_KEY);
-export const getRefreshToken = () => localStorage.getItem(REFRESH_TOKEN_KEY);
-
-export const setTokens = ({ access, refresh } = {}) => {
-  if (access) localStorage.setItem(ACCESS_TOKEN_KEY, access);
-  if (refresh) localStorage.setItem(REFRESH_TOKEN_KEY, refresh);
+export const getAccessToken = () => inMemoryAccessToken;
+export const setAccessToken = (token) => {
+  inMemoryAccessToken = token || null;
 };
-
-export const clearTokens = () => {
-  localStorage.removeItem(ACCESS_TOKEN_KEY);
-  localStorage.removeItem(REFRESH_TOKEN_KEY);
+export const clearAccessToken = () => {
+  inMemoryAccessToken = null;
 };
 
 const http = axios.create({
   baseURL: API_BASE_URL,
   timeout: 10000,
+  withCredentials: true, // sends the httpOnly refresh cookie
   headers: {
     Accept: 'application/json',
   },
@@ -86,23 +86,21 @@ const toError = (error) => {
   return normalisedError;
 };
 
-// Refresh-token rotation is enabled server-side: every call to REFRESH_PATH
-// invalidates the refresh token sent and returns a new one. If several
-// requests 401 at once, they must all await the SAME refresh call rather than
-// each spending (and invalidating) the refresh token independently.
+// The refresh token itself is never visible to JS (httpOnly cookie, sent
+// automatically via withCredentials). Refresh-token rotation is enabled
+// server-side, so concurrent 401s must all await the SAME refresh call.
 let refreshPromise = null;
 
 const refreshAccessToken = () => {
   if (!refreshPromise) {
-    const refreshToken = getRefreshToken();
     refreshPromise = http
-      .post(REFRESH_PATH, { refresh: refreshToken })
+      .post(REFRESH_PATH, null)
       .then((response) => {
-        setTokens(response.data);
+        setAccessToken(response.data.access);
         return response.data;
       })
       .catch((error) => {
-        clearTokens();
+        clearAccessToken();
         throw error;
       })
       .finally(() => {
@@ -111,6 +109,20 @@ const refreshAccessToken = () => {
   }
   return refreshPromise;
 };
+
+// Endpoints where a 401 should never trigger a refresh-and-retry: the
+// pre-auth flows (bad credentials/invalid code are expected 401s here, not a
+// stale-token situation) and the refresh endpoint itself (would recurse).
+const REFRESH_EXEMPT_PATHS = new Set([
+  '/api/v1/users/login/',
+  '/api/v1/users/signup/',
+  '/api/v1/users/google/',
+  '/api/v1/users/verify/',
+  '/api/v1/users/resend/',
+  '/api/v1/users/password-reset/',
+  '/api/v1/users/password-reset/confirm/',
+  REFRESH_PATH,
+]);
 
 export const apiRequest = async (path, options = {}) => {
   const { headers: customHeaders, body, ...rest } = options;
@@ -150,14 +162,20 @@ export const apiRequest = async (path, options = {}) => {
   };
 
   const config = buildConfig();
-  const wasBearerAuthed = Boolean(config.headers.Authorization?.startsWith('Bearer ')) && path !== REFRESH_PATH;
+  // Only skip the refresh attempt when a caller set an explicit NON-Bearer
+  // Authorization header (e.g. super-admin's Basic Auth) — a missing or
+  // Bearer Authorization header both mean "try restoring the session via the
+  // httpOnly refresh cookie," which is what lets a page reload transparently
+  // restore a valid session before any access token exists in memory yet.
+  const hasExplicitNonBearerAuth = Boolean(config.headers.Authorization) && !config.headers.Authorization.startsWith('Bearer ');
+  const eligibleForRefresh = !REFRESH_EXEMPT_PATHS.has(path) && !hasExplicitNonBearerAuth;
 
   try {
     const response = await http(config);
     return response.data;
   } catch (error) {
     const status = error.response?.status;
-    if (status === 401 && wasBearerAuthed && getRefreshToken()) {
+    if (status === 401 && eligibleForRefresh) {
       try {
         await refreshAccessToken();
         const retryResponse = await http(buildConfig());

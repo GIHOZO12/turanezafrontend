@@ -13,6 +13,13 @@ import {
 } from "../api/users";
 import { membershipStages } from "../constants/tiers";
 
+// Module-level (not component-level) so it survives AuthPage remounting —
+// window.google.accounts.id is a page-wide singleton and must only ever be
+// initialize()'d once per page load, regardless of React component lifecycle.
+let googleIdentityInitialized = false;
+let googleScriptLoading = false;
+const googleCredentialCallbackHolder = { current: null };
+
 const signupDefaults = { fullName: "", email: "", phone: "", password: "", confirmPassword: "" };
 const loginDefaults = { email: "", password: "" };
 const resetDefaults = { password: "", confirmPassword: "" };
@@ -333,9 +340,6 @@ const AuthPage = () => {
   const verificationSectionRef = useRef(null);
   const verificationInputRef = useRef(null);
   const googleButtonRef = useRef(null);
-  const googleScriptLoadedRef = useRef(false);
-  const googleInitializedRef = useRef(false);
-  const googleCredentialCallbackRef = useRef(null);
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
   useEffect(() => {
@@ -553,10 +557,11 @@ const AuthPage = () => {
 
   useEffect(() => {
     if (mode === "reset" || !googleClientId) return;
-    // Google logs a warning if initialize() is called more than once, so we
-    // only ever call it once (tracked via googleInitializedRef) and route the
-    // credential callback through a ref that always reflects the latest mode.
-    googleCredentialCallbackRef.current = async (response) => {
+    // Google logs a warning if initialize() is called more than once per page
+    // load, so we track that at module scope (survives this component
+    // remounting) and route the credential callback through a holder that
+    // always reflects the latest mode.
+    googleCredentialCallbackHolder.current = async (response) => {
       if (!response?.credential) return setFeedback({ type: "error", message: "Google sign-in did not return a credential." });
       setFeedback(null);
       setFormLoading(true);
@@ -574,13 +579,13 @@ const AuthPage = () => {
 
     const renderGoogleButton = () => {
       if (!window.google?.accounts?.id || !googleButtonRef.current) return;
-      if (!googleInitializedRef.current) {
+      if (!googleIdentityInitialized) {
         window.google.accounts.id.initialize({
           client_id: googleClientId,
-          callback: (response) => googleCredentialCallbackRef.current?.(response),
+          callback: (response) => googleCredentialCallbackHolder.current?.(response),
           auto_select: false,
         });
-        googleInitializedRef.current = true;
+        googleIdentityInitialized = true;
       }
       googleButtonRef.current.innerHTML = "";
       window.google.accounts.id.renderButton(googleButtonRef.current, {
@@ -589,8 +594,8 @@ const AuthPage = () => {
       setGoogleError(null);
     };
     if (window.google?.accounts?.id) return renderGoogleButton();
-    if (googleScriptLoadedRef.current) return;
-    googleScriptLoadedRef.current = true;
+    if (googleScriptLoading) return;
+    googleScriptLoading = true;
     const script = document.createElement("script");
     script.src = "https://accounts.google.com/gsi/client";
     script.async = true;

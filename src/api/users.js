@@ -1,10 +1,13 @@
-import { apiRequest, setTokens, clearTokens, getRefreshToken } from './client';
+import { apiRequest, setAccessToken, clearAccessToken } from './client';
 
 const USERS_ROOT = '/api/v1/users';
 
-const storeTokensFromResponse = (data) => {
-  if (data?.access && data?.refresh) {
-    setTokens({ access: data.access, refresh: data.refresh });
+// The refresh token is never in this response body — it's set directly as an
+// httpOnly cookie by the backend, invisible to JS. Only the access token is
+// handed to us, and it's kept in memory only (see client.js).
+const storeAccessTokenFromResponse = (data) => {
+  if (data?.access) {
+    setAccessToken(data.access);
   }
   return data;
 };
@@ -19,7 +22,7 @@ export const verifyEmail = (payload) =>
   apiRequest(`${USERS_ROOT}/verify/`, {
     method: 'POST',
     body: JSON.stringify(payload),
-  }).then(storeTokensFromResponse);
+  }).then(storeAccessTokenFromResponse);
 
 export const resendVerification = (payload) =>
   apiRequest(`${USERS_ROOT}/resend/`, {
@@ -43,25 +46,23 @@ export const loginUser = (payload) =>
   apiRequest(`${USERS_ROOT}/login/`, {
     method: 'POST',
     body: JSON.stringify(payload),
-  }).then(storeTokensFromResponse);
+  }).then(storeAccessTokenFromResponse);
 
 export const loginWithGoogle = (payload) =>
   apiRequest(`${USERS_ROOT}/google/`, {
     method: 'POST',
     body: JSON.stringify(payload),
-  }).then(storeTokensFromResponse);
+  }).then(storeAccessTokenFromResponse);
 
 export const logoutUser = async () => {
-  const refresh = getRefreshToken();
   try {
-    if (refresh) {
-      await apiRequest(`${USERS_ROOT}/logout/`, {
-        method: 'POST',
-        body: JSON.stringify({ refresh }),
-      });
-    }
+    // No body needed — the backend reads the refresh token from the httpOnly
+    // cookie (sent automatically) and clears it server-side.
+    await apiRequest(`${USERS_ROOT}/logout/`, {
+      method: 'POST',
+    });
   } finally {
-    clearTokens();
+    clearAccessToken();
   }
 };
 
