@@ -256,7 +256,7 @@ const GroupApplicationModal = ({ open, group, submitting, onClose, onSubmit }) =
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full p-2 text-slate-400 transition duration-150 ease-in-out hover:bg-slate-100 hover:text-slate-600"
+            className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-slate-400 transition duration-150 ease-in-out hover:bg-slate-100 hover:text-slate-600"
           >
             <span className="text-xl leading-none">&times;</span>
           </button>
@@ -641,7 +641,7 @@ const GroupApplicationModal = ({ open, group, submitting, onClose, onSubmit }) =
             </label>
           </div>
 
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-xs text-slate-500">
               Approval converts you into an investor member. Expect an automated confirmation email and onboarding
               guidance from Urban Evolution Group.

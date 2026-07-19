@@ -132,11 +132,11 @@ const PayCommitmentFeePage = () => {
         <div className="mt-8 rounded-3xl border border-slate-100 bg-white p-6 shadow-card">
           <div className="rounded-2xl border border-primary/20 bg-primary/5 p-5 text-center">
             <p className="text-xs font-semibold uppercase tracking-widest text-primary">Amount to pay</p>
-            <p className="mt-1 text-3xl font-bold text-slate-900">
+            <p className="mt-1 break-words text-2xl font-bold text-slate-900 sm:text-3xl">
               {formatCurrency(application.commitment_fee_amount_rwf, 'RWF', { maximumFractionDigits: 0 })}
             </p>
             <p className="mt-4 text-xs font-semibold uppercase tracking-widest text-primary">Pay to MoMo code</p>
-            <p className="mt-1 text-3xl font-bold tracking-widest text-slate-900">*182*8*1*{application.momo_payment_code}#</p>
+            <p className="mt-1 break-all text-xl font-bold tracking-wide text-slate-900 sm:text-2xl sm:tracking-widest md:text-3xl">*182*8*1*{application.momo_payment_code}#</p>
           </div>
 
           <ol className="mt-6 space-y-2 text-sm text-slate-600">
@@ -170,13 +170,13 @@ const PayCommitmentFeePage = () => {
 
       {modalOpen ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 px-4">
-          <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
-            <div className="flex items-center justify-between">
+          <div className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl">
+            <div className="flex items-center justify-between gap-3">
               <h2 className="text-lg font-semibold text-slate-900">Upload proof of payment</h2>
               <button
                 type="button"
                 onClick={() => setModalOpen(false)}
-                className="rounded-full p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+                className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600"
               >
                 <span aria-hidden="true">&times;</span>
                 <span className="sr-only">Close</span>

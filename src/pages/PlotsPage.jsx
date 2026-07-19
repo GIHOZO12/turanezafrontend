@@ -36,7 +36,7 @@ const PlotCard = ({ plot, isOwner, membership }) => {
 
         <p className="mt-3 text-sm text-slate-600 line-clamp-3">{plot.proposed_house_description}</p>
 
-        <dl className="mt-4 grid grid-cols-2 gap-3 text-xs text-slate-500">
+        <dl className="mt-4 grid grid-cols-1 gap-3 text-xs text-slate-500 sm:grid-cols-2">
           <div>
             <dt className="font-semibold uppercase tracking-wide text-slate-400">Plot size</dt>
             <dd className="mt-1 text-sm font-semibold text-slate-800">{plot.plot_size_sqm} m&sup2;</dd>

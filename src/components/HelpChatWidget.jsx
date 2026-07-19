@@ -80,8 +80,8 @@ const HelpChatWidget = () => {
   return (
     <div className="fixed bottom-3 right-3 z-50 sm:bottom-4 sm:right-4">
       {open ? (
-        <div className="mb-3 w-[calc(100vw-1.5rem)] max-w-80 rounded-3xl border border-slate-200 bg-white shadow-2xl">
-          <div className="flex items-center justify-between rounded-t-3xl bg-primary px-4 py-3 text-white">
+        <div className="mb-3 flex max-h-[min(32rem,calc(100vh-6rem))] w-[calc(100vw-1.5rem)] max-w-80 flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl">
+          <div className="flex flex-shrink-0 items-center justify-between rounded-t-3xl bg-primary px-4 py-3 text-white">
             <div>
               <p className="text-sm font-semibold">TURANEZA Assistant</p>
               <p className="text-[11px] text-white/80">Ask about plots, groups & investments</p>
@@ -89,16 +89,17 @@ const HelpChatWidget = () => {
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="rounded-full bg-white/20 px-2 py-1 text-xs font-semibold hover:bg-white/30"
+              aria-label="Close help chat"
+              className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-white/20 text-sm font-semibold hover:bg-white/30"
             >
               ✕
             </button>
           </div>
-          <div className="max-h-64 space-y-2 overflow-y-auto bg-white px-4 py-3">
+          <div className="flex-1 space-y-2 overflow-y-auto bg-white px-4 py-3">
             {chatMessages}
             {sending ? <div className="max-w-[90%] rounded-2xl bg-slate-100 px-3 py-2 text-sm text-slate-500">Typing...</div> : null}
           </div>
-          <div className="border-t border-slate-100 px-4 py-3">
+          <div className="flex-shrink-0 border-t border-slate-100 px-4 py-3">
             {messages.length <= 1 ? (
               <div className="mb-2 flex flex-wrap gap-2">
                 {/* {suggestions.map((question) => (
@@ -133,7 +134,7 @@ const HelpChatWidget = () => {
                 type="button"
                 onClick={() => handleSend(input)}
                 disabled={sending}
-                className="rounded-xl bg-primary px-3 py-2 text-xs font-semibold text-white transition hover:bg-primary/90 disabled:opacity-50"
+                className="flex-shrink-0 rounded-xl bg-primary px-3 py-2 text-xs font-semibold text-white transition hover:bg-primary/90 disabled:opacity-50"
               >
                 Send
               </button>

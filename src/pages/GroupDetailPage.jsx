@@ -17,6 +17,7 @@ import DesignAssetManager from '../components/DesignAssetManager';
 import DesignAssetLightbox from '../components/DesignAssetLightbox';
 import GroupApplicationModal from '../components/GroupApplicationModal';
 import GroupDocumentManager from '../components/GroupDocumentManager';
+import InvestorLayout from '../components/InvestorLayout';
 import { formatCurrency } from '../utils/currency';
 
 const formatCurrencyBuckets = (buckets) => {
@@ -657,55 +658,58 @@ const GroupDetailPage = () => {
   };
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-porcelain text-slate-600">
-        <div className="flex flex-col items-center gap-3 rounded-2xl bg-white p-8 shadow-card">
-          <span className="h-10 w-10 animate-spin rounded-full border-4 border-primary/20 border-t-primary" />
-          <p className="text-sm font-medium">Loading group dashboard...</p>
+      <InvestorLayout active="groups">
+        <div className="flex min-h-[60vh] items-center justify-center text-slate-600">
+          <div className="flex flex-col items-center gap-3 rounded-2xl bg-white p-8 shadow-card">
+            <span className="h-10 w-10 animate-spin rounded-full border-4 border-primary/20 border-t-primary" />
+            <p className="text-sm font-medium">Loading group dashboard...</p>
+          </div>
         </div>
-      </div>
+      </InvestorLayout>
     );
   }
 
   if (error && !group) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-porcelain text-slate-600">
-        <div className="max-w-md rounded-3xl bg-white p-8 text-center shadow-card">
-          <p className="text-base font-semibold text-slate-900">Group unavailable</p>
-          <p className="mt-2 text-sm text-slate-500">{error}</p>
-          <button
-            type="button"
-            onClick={() => navigate('/groups')}
-            className="mt-4 inline-flex items-center justify-center rounded-pill bg-primary px-5 py-2 text-sm font-semibold text-white transition duration-150 ease-in-out hover:bg-primary/90"
-          >
-            Back to groups
-          </button>
+      <InvestorLayout active="groups">
+        <div className="flex min-h-[60vh] items-center justify-center text-slate-600">
+          <div className="max-w-md rounded-3xl bg-white p-8 text-center shadow-card">
+            <p className="text-base font-semibold text-slate-900">Group unavailable</p>
+            <p className="mt-2 text-sm text-slate-500">{error}</p>
+            <button
+              type="button"
+              onClick={() => navigate('/groups')}
+              className="mt-4 inline-flex items-center justify-center rounded-pill bg-primary px-5 py-2 text-sm font-semibold text-white transition duration-150 ease-in-out hover:bg-primary/90"
+            >
+              Back to groups
+            </button>
+          </div>
         </div>
-      </div>
+      </InvestorLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-porcelain text-slate-900">
-      <header className="border-b border-white/40 bg-white/80 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-5 sm:px-6 lg:px-8">
-          <Link
-            to="/groups"
-            className="rounded-pill border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-500 transition duration-150 ease-in-out hover:border-primary hover:text-primary"
-          >
-            {'<'} Back to groups
-          </Link>
-          <button
-            type="button"
-            onClick={handleRefresh}
-            disabled={refreshing}
-            className="rounded-pill border border-primary/20 px-4 py-2 text-xs font-semibold text-primary transition duration-150 ease-in-out hover:border-primary hover:text-primary/90 disabled:cursor-not-allowed disabled:border-slate-200 disabled:text-slate-400"
-          >
-            {refreshing ? 'Refreshing...' : 'Refresh data'}
-          </button>
-        </div>
-      </header>
-
-      <main className="mx-auto w-full max-w-6xl px-4 pb-16 pt-8 sm:px-6 lg:px-8">
+    <InvestorLayout
+      active="groups"
+      headerActions={
+        <button
+          type="button"
+          onClick={handleRefresh}
+          disabled={refreshing}
+          className="rounded-pill border border-primary/20 px-4 py-2 text-xs font-semibold text-primary transition duration-150 ease-in-out hover:border-primary hover:text-primary/90 disabled:cursor-not-allowed disabled:border-slate-200 disabled:text-slate-400"
+        >
+          {refreshing ? 'Refreshing...' : 'Refresh data'}
+        </button>
+      }
+    >
+      <div className="mx-auto w-full max-w-6xl">
+        <Link
+          to="/groups"
+          className="mb-6 inline-flex items-center rounded-pill border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-500 transition duration-150 ease-in-out hover:border-primary hover:text-primary"
+        >
+          {'<'} Back to groups
+        </Link>
         {feedback ? (
           <div
             className={clsx(
@@ -1385,7 +1389,7 @@ const GroupDetailPage = () => {
             </div>
           )}
         </section>
-      </main>
+      </div>
 
       <DesignAssetLightbox
         open={lightbox.open}
@@ -1415,7 +1419,7 @@ const GroupDetailPage = () => {
         }}
         onSubmit={handleApplicationSubmit}
       />
-    </div>
+    </InvestorLayout>
   );
 };
 

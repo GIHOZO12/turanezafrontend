@@ -197,7 +197,7 @@ const CreateGroupPage = () => {
             <button
               type="button"
               onClick={() => navigate('/groups')}
-              className="rounded-full p-2 text-slate-400 transition duration-150 ease-in-out hover:bg-slate-100 hover:text-slate-600"
+              className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-slate-400 transition duration-150 ease-in-out hover:bg-slate-100 hover:text-slate-600"
             >
               <span aria-hidden="true" className="text-lg leading-none">&times;</span>
               <span className="sr-only">Close form</span>

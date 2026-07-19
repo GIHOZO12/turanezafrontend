@@ -329,13 +329,13 @@ const GroupAdminPortalPage = () => {
                   className="flex flex-col rounded-2xl border border-slate-100 bg-white px-4 py-3 text-left shadow-card transition duration-150 ease-in-out hover:border-primary/40"
                 >
                   <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <p className="text-sm font-semibold text-slate-900">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-slate-900">
                         {thread.user.full_name || thread.user.email}
                       </p>
-                      <p className="text-xs text-slate-500">{thread.user.email}</p>
+                      <p className="truncate text-xs text-slate-500">{thread.user.email}</p>
                     </div>
-                    <p className="text-[10px] uppercase tracking-widest text-slate-400">
+                    <p className="flex-shrink-0 text-[10px] uppercase tracking-widest text-slate-400">
                       {formatTime(thread.lastMessageAt)}
                     </p>
                   </div>

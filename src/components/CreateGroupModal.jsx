@@ -27,7 +27,7 @@ const CreateGroupModal = ({ open, onClose, onProceed, userRole }) => {
           </div>
           <button
             type="button"
-            className="rounded-full p-2 text-slate-400 transition duration-150 ease-in-out hover:bg-slate-100 hover:text-slate-600"
+            className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-slate-400 transition duration-150 ease-in-out hover:bg-slate-100 hover:text-slate-600"
             onClick={onClose}
           >
             <span className="text-lg leading-none">&times;</span>

@@ -47,19 +47,19 @@ const DesignAssetLightbox = ({
         <button
           type="button"
           onClick={onClose}
-          className="absolute right-4 top-4 rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-600 transition hover:bg-slate-200"
+          className="absolute right-4 top-4 z-10 rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-600 transition hover:bg-slate-200"
         >
           Close
         </button>
 
-        <div className="flex flex-col gap-4 p-6">
+        <div className="flex flex-col gap-4 p-6 pr-20 sm:pr-24">
           <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-widest text-primary">{project.name}</p>
               <h3 className="text-lg font-semibold text-slate-900">{asset.title}</h3>
               {asset.description ? <p className="text-sm text-slate-500">{asset.description}</p> : null}
             </div>
-            <div className="flex items-center gap-2 text-xs text-slate-500">
+            <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
               <button
                 type="button"
                 onClick={onPrevProject}

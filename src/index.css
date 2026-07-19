@@ -88,7 +88,9 @@ body {
   border-color: var(--uig-border) !important;
 }
 
-.theme-dark .text-slate-900 {
+.theme-dark .text-slate-900,
+.theme-dark .text-slate-800,
+.theme-dark .text-slate-700 {
   color: var(--uig-text) !important;
 }
 
@@ -106,10 +108,86 @@ body {
   background-color: var(--uig-surface-alt) !important;
 }
 
+.theme-dark .bg-slate-200,
+.theme-dark .bg-slate-300 {
+  background-color: rgba(148, 163, 184, 0.25) !important;
+}
+
+.theme-dark .border-slate-300 {
+  border-color: rgba(148, 163, 184, 0.35) !important;
+}
+
 .theme-dark input,
 .theme-dark textarea,
 .theme-dark select {
   background-color: var(--uig-surface-alt);
   color: var(--uig-text);
   border-color: var(--uig-border);
+}
+
+/* Status badges/banners (amber, emerald, rose, sky, violet, teal, orange, red,
+   blue) use a light-tinted background with matching darker text, e.g.
+   "bg-amber-50 text-amber-700". Rather than re-pairing every color+text
+   combination individually, dim the whole badge as a unit — background,
+   border, and text scale together so their relative contrast is preserved
+   instead of staying a glaring light patch on a dark page. `~=` matches a
+   single class token exactly (not a substring), so bg-amber-50 won't also
+   catch bg-amber-500. */
+.theme-dark [class~="bg-amber-50"],
+.theme-dark [class~="bg-amber-100"],
+.theme-dark [class~="bg-emerald-50"],
+.theme-dark [class~="bg-emerald-100"],
+.theme-dark [class~="bg-rose-50"],
+.theme-dark [class~="bg-rose-100"],
+.theme-dark [class~="bg-sky-50"],
+.theme-dark [class~="bg-sky-100"],
+.theme-dark [class~="bg-violet-50"],
+.theme-dark [class~="bg-teal-50"],
+.theme-dark [class~="bg-teal-100"],
+.theme-dark [class~="bg-orange-50"],
+.theme-dark [class~="bg-orange-100"],
+.theme-dark [class~="bg-red-50"],
+.theme-dark [class~="bg-blue-50"],
+/* Same badges but with an opacity-modifier suffix (e.g. "bg-emerald-50/60"),
+   which is a different class token entirely and isn't caught by the exact
+   `~=` matches above. */
+.theme-dark [class~="bg-emerald-50/60"],
+.theme-dark [class~="bg-slate-100/60"] {
+  filter: brightness(0.55) saturate(1.1);
+}
+
+/* Saturated color text used standalone (no light -50/-100 badge background
+   above it to dim as a unit) stays dark-on-dark and becomes unreadable.
+   Lighten these to their pale/300-ish equivalent instead. */
+.theme-dark .text-emerald-700 {
+  color: #6ee7b7 !important;
+}
+.theme-dark .text-rose-700,
+.theme-dark .text-rose-600 {
+  color: #fca5b1 !important;
+}
+.theme-dark .text-amber-700 {
+  color: #fcd34d !important;
+}
+.theme-dark .text-orange-600 {
+  color: #fdba74 !important;
+}
+.theme-dark .text-violet-700 {
+  color: #c4b5fd !important;
+}
+.theme-dark .text-teal-700 {
+  color: #5eead4 !important;
+}
+.theme-dark .text-sky-600,
+.theme-dark .text-sky-700 {
+  color: #7dd3fc !important;
+}
+
+/* Tailwind's divide-y sets a border-top on this child-combinator selector;
+   overriding .border-slate-* on the parent doesn't reach it since
+   "divide-slate-100" is a distinct class token from "border-slate-100". */
+.theme-dark .divide-slate-50 > :not([hidden]) ~ :not([hidden]),
+.theme-dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+.theme-dark .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
+  border-color: var(--uig-border) !important;
 }

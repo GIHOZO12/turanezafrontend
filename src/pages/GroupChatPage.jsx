@@ -54,6 +54,7 @@ const GroupChatPage = () => {
   const [messageText, setMessageText] = useState('');
   const [sending, setSending] = useState(false);
   const [error, setError] = useState(null);
+  const [mobileRosterOpen, setMobileRosterOpen] = useState(false);
   const socketRef = useRef(null);
   const [socketConnected, setSocketConnected] = useState(false);
 
@@ -270,6 +271,7 @@ const GroupChatPage = () => {
 
   const handleSelectRecipient = (recipientId) => {
     setSelectedRecipientId(recipientId);
+    setMobileRosterOpen(false);
   };
 
   const handleReturnToGroup = () => {
@@ -312,77 +314,104 @@ const GroupChatPage = () => {
     );
   }
 
+  const rosterPanelContent = (
+    <>
+      <div className="border-b border-white/40 px-5 py-4">
+        <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary">Group</p>
+        <h2 className="mt-1 text-lg font-semibold text-slate-900">
+          #{groupCode} · {group?.name}
+        </h2>
+        <p className="mt-1 text-xs text-slate-500">
+          {group?.members_count ?? 0} members • Min ticket {minTicketLabel}
+        </p>
+      </div>
+      <div className="flex-1 overflow-y-auto px-3 py-4">
+        <button
+          type="button"
+          onClick={() => handleSelectRecipient(null)}
+          className={clsx(
+            'flex w-full flex-col rounded-2xl px-4 py-3 text-left transition duration-150 ease-in-out',
+            isGroupChat ? 'bg-primary/10 text-primary' : 'text-slate-700 hover:bg-slate-100',
+          )}
+        >
+          <span className="text-sm font-semibold">Group chat</span>
+          <span className="text-xs text-slate-500">Visible to every member</span>
+        </button>
+
+        <p className="mt-6 px-2 text-xs font-semibold uppercase tracking-widest text-slate-500">Direct messages</p>
+        <div className="mt-2 space-y-2">
+          {availableMembers.length === 0 ? (
+            <p className="px-2 text-xs text-slate-400">Invite more investors to unlock private chats.</p>
+          ) : (
+            availableMembers.map((entry) => {
+              const active = selectedRecipientId === entry.user?.id;
+              return (
+                <button
+                  type="button"
+                  key={entry.id}
+                  onClick={() => handleSelectRecipient(entry.user?.id)}
+                  className={clsx(
+                    'flex w-full items-center justify-between rounded-2xl px-4 py-3 text-left transition duration-150 ease-in-out',
+                    active ? 'bg-primary/10 text-primary' : 'text-slate-700 hover:bg-slate-100',
+                  )}
+                >
+                  <div>
+                    <p className="text-sm font-semibold">
+                      {entry.user?.full_name || entry.user?.email || 'Member'}
+                    </p>
+                    <p className="text-xs text-slate-500">{entry.user?.email}</p>
+                  </div>
+                  {entry.role === 'admin' ? (
+                    <span className="rounded-pill bg-primary/10 px-3 py-1 text-[10px] font-semibold text-primary">
+                      Admin
+                    </span>
+                  ) : null}
+                </button>
+              );
+            })
+          )}
+        </div>
+      </div>
+      <div className="border-t border-white/40 px-4 py-4">
+        <button
+          type="button"
+          onClick={handleReturnToGroup}
+          className="flex w-full items-center justify-center rounded-pill border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-600 transition duration-150 ease-in-out hover:border-primary/60 hover:text-primary"
+        >
+          ← Back to overview
+        </button>
+      </div>
+    </>
+  );
+
   return (
     <InvestorLayout active="groups">
       <div className="-mx-4 sm:-mx-6 lg:-mx-8">
         <div className="flex min-h-[70vh] rounded-3xl border border-white/40 bg-porcelain text-slate-900">
       <aside className="hidden w-80 flex-shrink-0 flex-col border-r border-white/40 bg-white/80 backdrop-blur md:flex">
-        <div className="border-b border-white/40 px-5 py-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary">Group</p>
-          <h2 className="mt-1 text-lg font-semibold text-slate-900">
-            #{groupCode} · {group?.name}
-          </h2>
-          <p className="mt-1 text-xs text-slate-500">
-            {group?.members_count ?? 0} members • Min ticket {minTicketLabel}
-          </p>
-        </div>
-        <div className="flex-1 overflow-y-auto px-3 py-4">
-          <button
-            type="button"
-            onClick={() => handleSelectRecipient(null)}
-            className={clsx(
-              'flex w-full flex-col rounded-2xl px-4 py-3 text-left transition duration-150 ease-in-out',
-              isGroupChat ? 'bg-primary/10 text-primary' : 'text-slate-700 hover:bg-slate-100',
-            )}
-          >
-            <span className="text-sm font-semibold">Group chat</span>
-            <span className="text-xs text-slate-500">Visible to every member</span>
-          </button>
+        {rosterPanelContent}
+      </aside>
 
-          <p className="mt-6 px-2 text-xs font-semibold uppercase tracking-widest text-slate-500">Direct messages</p>
-          <div className="mt-2 space-y-2">
-            {availableMembers.length === 0 ? (
-              <p className="px-2 text-xs text-slate-400">Invite more investors to unlock private chats.</p>
-            ) : (
-              availableMembers.map((entry) => {
-                const active = selectedRecipientId === entry.user?.id;
-                return (
-                  <button
-                    type="button"
-                    key={entry.id}
-                    onClick={() => handleSelectRecipient(entry.user?.id)}
-                    className={clsx(
-                      'flex w-full items-center justify-between rounded-2xl px-4 py-3 text-left transition duration-150 ease-in-out',
-                      active ? 'bg-primary/10 text-primary' : 'text-slate-700 hover:bg-slate-100',
-                    )}
-                  >
-                    <div>
-                      <p className="text-sm font-semibold">
-                        {entry.user?.full_name || entry.user?.email || 'Member'}
-                      </p>
-                      <p className="text-xs text-slate-500">{entry.user?.email}</p>
-                    </div>
-                    {entry.role === 'admin' ? (
-                      <span className="rounded-pill bg-primary/10 px-3 py-1 text-[10px] font-semibold text-primary">
-                        Admin
-                      </span>
-                    ) : null}
-                  </button>
-                );
-              })
-            )}
+      {mobileRosterOpen ? (
+        <div className="fixed inset-0 z-50 flex md:hidden">
+          <div
+            className="absolute inset-0 bg-slate-900/50"
+            onClick={() => setMobileRosterOpen(false)}
+            aria-hidden="true"
+          />
+          <div className="relative flex h-full w-80 max-w-[85vw] flex-col bg-white shadow-2xl">
+            <button
+              type="button"
+              onClick={() => setMobileRosterOpen(false)}
+              aria-label="Close conversation list"
+              className="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+            {rosterPanelContent}
           </div>
         </div>
-        <div className="border-t border-white/40 px-4 py-4">
-          <button
-            type="button"
-            onClick={handleReturnToGroup}
-            className="flex w-full items-center justify-center rounded-pill border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-600 transition duration-150 ease-in-out hover:border-primary/60 hover:text-primary"
-          >
-            ← Back to overview
-          </button>
-        </div>
-      </aside>
+      ) : null}
 
       <main className="flex flex-1 flex-col bg-porcelain">
         <header className="border-b border-white/40 bg-white/80 px-4 py-4 backdrop-blur sm:px-6">
@@ -399,6 +428,13 @@ const GroupChatPage = () => {
               </p>
             </div>
             <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setMobileRosterOpen(true)}
+                className="rounded-pill border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-600 transition duration-150 ease-in-out hover:border-primary/60 hover:text-primary md:hidden"
+              >
+                Conversations
+              </button>
               <Link
                 to={`/groups/${groupId}`}
                 className="rounded-pill border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-600 transition duration-150 ease-in-out hover:border-primary/60 hover:text-primary"
