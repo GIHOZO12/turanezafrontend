@@ -124,6 +124,26 @@ const REFRESH_EXEMPT_PATHS = new Set([
   REFRESH_PATH,
 ]);
 
+// The very first protected request of a page load is otherwise guaranteed to
+// 401 (no in-memory access token survives a reload), which shows up as a red
+// console error even though it's silently recovered a moment later. Instead,
+// make that first request wait for a single proactive refresh attempt so it
+// either succeeds outright (valid session cookie) or fails once cleanly (no
+// session) — no more attempt-then-401-then-retry dance visible in devtools.
+// A promise (not just a boolean) so concurrent callers on the same page load
+// — e.g. two components both fetching on mount — all await the SAME attempt
+// instead of racing past a synchronous flag before it resolves.
+let bootstrapPromise = null;
+const ensureBootstrapped = () => {
+  if (!bootstrapPromise) {
+    // Not logged in (or the refresh cookie is gone) is a normal outcome here
+    // — swallow it, the caller's own request will 401 and existing
+    // 401-handling takes over.
+    bootstrapPromise = refreshAccessToken().catch(() => {});
+  }
+  return bootstrapPromise;
+};
+
 export const apiRequest = async (path, options = {}) => {
   const { headers: customHeaders, body, ...rest } = options;
   const isFormData = typeof FormData !== 'undefined' && body instanceof FormData;
@@ -161,14 +181,17 @@ export const apiRequest = async (path, options = {}) => {
     return config;
   };
 
-  const config = buildConfig();
-  // Only skip the refresh attempt when a caller set an explicit NON-Bearer
-  // Authorization header (e.g. super-admin's Basic Auth) — a missing or
-  // Bearer Authorization header both mean "try restoring the session via the
-  // httpOnly refresh cookie," which is what lets a page reload transparently
-  // restore a valid session before any access token exists in memory yet.
-  const hasExplicitNonBearerAuth = Boolean(config.headers.Authorization) && !config.headers.Authorization.startsWith('Bearer ');
+  // Only skip refresh-related handling when a caller set an explicit
+  // NON-Bearer Authorization header (super-admin's Basic Auth) or this is one
+  // of the pre-auth/refresh endpoints itself.
+  const hasExplicitNonBearerAuth = Boolean(customHeaders?.Authorization) && !customHeaders.Authorization.startsWith('Bearer ');
   const eligibleForRefresh = !REFRESH_EXEMPT_PATHS.has(path) && !hasExplicitNonBearerAuth;
+
+  if (eligibleForRefresh) {
+    await ensureBootstrapped();
+  }
+
+  const config = buildConfig();
 
   try {
     const response = await http(config);
