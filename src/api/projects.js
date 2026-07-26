@@ -53,3 +53,8 @@ export const fetchPropertyListings = (params = {}) =>
   apiRequest(`${PROJECTS_ROOT}/properties/${toQueryString(params)}`, {
     method: 'GET',
   });
+
+export const fetchPropertyById = (projectId) =>
+  apiRequest(`${PROJECTS_ROOT}/properties/${projectId}/`, {
+    method: 'GET',
+  });

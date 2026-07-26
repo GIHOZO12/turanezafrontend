@@ -327,3 +327,58 @@ export const previewJoinRequestCommitmentFeeProof = (id) =>
     headers: withAuthHeaders(),
     responseType: 'blob',
   });
+
+export const fetchSuperAdminProjects = (params = '') =>
+  apiRequest(`/api/v1/super-admin/projects/${params}`, {
+    method: 'GET',
+    headers: withAuthHeaders(),
+  });
+
+export const fetchSuperAdminProject = (id) =>
+  apiRequest(`/api/v1/super-admin/projects/${id}/`, {
+    method: 'GET',
+    headers: withAuthHeaders(),
+  });
+
+export const createSuperAdminProject = (payload) =>
+  apiRequest('/api/v1/super-admin/projects/', {
+    method: 'POST',
+    body: payload instanceof FormData ? payload : JSON.stringify(payload),
+    headers: withAuthHeaders(),
+  });
+
+export const updateSuperAdminProject = (id, payload) =>
+  apiRequest(`/api/v1/super-admin/projects/${id}/`, {
+    method: 'PATCH',
+    body: payload instanceof FormData ? payload : JSON.stringify(payload),
+    headers: withAuthHeaders(),
+  });
+
+export const deleteSuperAdminProject = (id) =>
+  apiRequest(`/api/v1/super-admin/projects/${id}/`, {
+    method: 'DELETE',
+    headers: withAuthHeaders(),
+  });
+
+// Dedicated super-admin-scoped design-asset endpoints (Basic Auth, same
+// permission class as the other /api/v1/super-admin/* routes) — the plain
+// /api/v1/projects/designs/ endpoint is JWT-only and always rejects Basic
+// Auth, so it can't be reused here.
+export const fetchSuperAdminProjectDesignAssets = (projectId) =>
+  apiRequest(`/api/v1/super-admin/projects/${projectId}/design-assets/`, {
+    method: 'GET',
+    headers: withAuthHeaders(),
+  });
+
+export const createSuperAdminProjectDesignAsset = (projectId, formData) =>
+  apiRequest(`/api/v1/super-admin/projects/${projectId}/design-assets/`, {
+    method: 'POST',
+    body: formData,
+    headers: withAuthHeaders(),
+  });
+
+export const deleteSuperAdminProjectDesignAsset = (assetId) =>
+  apiRequest(`/api/v1/super-admin/design-assets/${assetId}/`, {
+    method: 'DELETE',
+    headers: withAuthHeaders(),
+  });

@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import InvestorLayout from '../components/InvestorLayout';
 import { fetchPropertyListings } from '../api/projects';
 import { formatCurrency } from '../utils/currency';
+import { sanitizeUrl } from '../utils/url';
 
 // Human-friendly labels for property categories used in listings + filters.
 const PROPERTY_TYPE_LABELS = {
@@ -96,7 +97,7 @@ const PropertyCard = ({ property, onViewDetails }) => {
       <div className="relative h-48 w-full overflow-hidden bg-slate-100">
         {property.featured_image_url ? (
           <img
-            src={property.featured_image_url}
+            src={sanitizeUrl(property.featured_image_url)}
             alt={property.name}
             className="h-full w-full object-cover"
           />

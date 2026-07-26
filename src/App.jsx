@@ -5,6 +5,7 @@ import DashboardPage from "./pages/DashboardPage";
 import GroupsPage from "./pages/GroupsPage";
 import GroupDetailPage from "./pages/GroupDetailPage";
 import GroupChatPage from "./pages/GroupChatPage";
+import ProjectDetailPage from "./pages/ProjectDetailPage";
 import CreateGroupPage from "./pages/CreateGroupPage";
 import JoinGroupPage from "./pages/JoinGroupPage";
 import GroupAdminPortalPage from "./pages/GroupAdminPortalPage";
@@ -36,6 +37,7 @@ import SuperAdminChatsPage from "./pages/SuperAdminChatsPage";
 import SuperAdminAuditLogsPage from "./pages/SuperAdminAuditLogsPage";
 import SuperAdminCompliancePage from "./pages/SuperAdminCompliancePage";
 import SuperAdminPlotsPage from "./pages/SuperAdminPlotsPage";
+import SuperAdminProjectsPage from "./pages/SuperAdminProjectsPage";
 import HelpChatWidget from "./components/HelpChatWidget";
 
 const App = () => {
@@ -54,6 +56,7 @@ const App = () => {
         <Route path="/groups/:groupId/join" element={<JoinGroupPage />} />
         <Route path="/groups/:groupId/admin" element={<GroupAdminPortalPage />} />
         <Route path="/groups/:groupId/chat" element={<GroupChatPage />} />
+        <Route path="/groups/:groupId/projects/:projectId" element={<ProjectDetailPage />} />
         <Route path="/plots" element={<PlotsPage />} />
         <Route path="/plots/:plotId/join" element={<JoinPlotPage />} />
         <Route path="/applications/:applicationId/pay-commitment-fee" element={<PayCommitmentFeePage />} />
@@ -76,6 +79,7 @@ const App = () => {
         <Route path="/super-admin/users" element={<SuperAdminUsersPage />} />
         <Route path="/super-admin/compliance" element={<SuperAdminCompliancePage />} />
         <Route path="/super-admin/plots" element={<SuperAdminPlotsPage />} />
+        <Route path="/super-admin/projects" element={<SuperAdminProjectsPage />} />
         <Route path="/super-admin/groups" element={<SuperAdminGroupsPage />} />
         <Route path="/super-admin/chats" element={<SuperAdminChatsPage />} />
         <Route path="/super-admin/audit-logs" element={<SuperAdminAuditLogsPage />} />

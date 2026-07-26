@@ -16,6 +16,7 @@ const NAV_ITEMS = [
   { to: '/super-admin/compliance', label: 'Compliance' },
   { to: '/super-admin/groups', label: 'Groups' },
   { to: '/super-admin/plots', label: 'Plots' },
+  { to: '/super-admin/projects', label: 'Projects' },
   { to: '/super-admin/chats', label: 'Chats' },
   { to: '/super-admin/audit-logs', label: 'Audit Logs' },
 ];

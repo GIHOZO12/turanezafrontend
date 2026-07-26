@@ -12,7 +12,7 @@ const inferLocalApiBase = () => {
   return window.location.origin;
 };
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || inferLocalApiBase();
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || inferLocalApiBase();
 const REFRESH_PATH = '/api/v1/users/token/refresh/';
 
 // The access token lives in memory only (never localStorage/cookies) to

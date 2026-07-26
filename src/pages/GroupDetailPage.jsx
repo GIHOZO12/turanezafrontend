@@ -10,7 +10,7 @@ import {
   reviewGroupApplication,
   submitGroupApplication,
 } from '../api/groups';
-import { fetchProjects, fetchProjectDesignAssets, deleteProjectDesignAsset } from '../api/projects';
+import { fetchProjects, fetchPropertyListings, fetchProjectDesignAssets, deleteProjectDesignAsset } from '../api/projects';
 import { fetchProposals } from '../api/governance';
 import { fetchCurrentUser } from '../api/users';
 import DesignAssetManager from '../components/DesignAssetManager';
@@ -19,35 +19,7 @@ import GroupApplicationModal from '../components/GroupApplicationModal';
 import GroupDocumentManager from '../components/GroupDocumentManager';
 import InvestorLayout from '../components/InvestorLayout';
 import { formatCurrency } from '../utils/currency';
-
-const formatCurrencyBuckets = (buckets) => {
-  const entries = Object.entries(buckets || {});
-  if (!entries.length) {
-    return '0';
-  }
-  return entries
-    .map(([currency, amount]) => {
-      const numeric = Number(amount) || 0;
-      try {
-        return formatCurrency(numeric, currency);
-      } catch (err) {
-        return `${numeric.toLocaleString()} ${currency}`;
-      }
-    })
-    .join(' | ');
-};
-
-const formatProjectAmount = (amount, currency) => {
-  const numeric = Number(amount) || 0;
-  if (!currency) {
-    return numeric.toLocaleString();
-  }
-  try {
-        return formatCurrency(numeric, currency);
-  } catch (err) {
-    return `${numeric.toLocaleString()} ${currency}`;
-  }
-};
+import { sanitizeUrl } from '../utils/url';
 
 const formatUsdValue = (value) => {
   const numeric = Number(value);
@@ -137,17 +109,6 @@ const summariseVotes = (votes = []) =>
     },
     { yes: 0, no: 0, abstain: 0 },
   );
-
-const accumulateCurrencyTotals = (items, field) =>
-  items.reduce((acc, item) => {
-    const currency = item.currency || 'USD';
-    const amount = Number(item[field]) || 0;
-    if (!amount) {
-      return acc;
-    }
-    acc[currency] = (acc[currency] || 0) + amount;
-    return acc;
-  }, {});
 
 const defaultLightboxState = { open: false, projectIndex: 0, assetIndex: 0 };
 
@@ -321,10 +282,11 @@ const GroupDetailPage = () => {
       }
       setError(null);
       try {
-        const [groupData, membershipsData, projectsData, proposalsData] = await Promise.all([
+        const [groupData, membershipsData, projectsData, propertiesData, proposalsData] = await Promise.all([
           fetchGroupById(groupId),
           fetchMemberships(),
           fetchProjects(),
+          fetchPropertyListings(),
           fetchProposals(),
         ]);
 
@@ -333,8 +295,14 @@ const GroupDetailPage = () => {
         const membershipEntry = membershipList.find((entry) => `${entry.group}` === `${groupId}`);
         setMembership(membershipEntry || null);
 
+        // /api/v1/projects/projects/ has the `group` id needed to scope this
+        // list, but not `active_investors` — that only exists on the
+        // properties serializer. Merge the two by id rather than picking one.
+        const propertyById = new Map(normaliseList(propertiesData).map((property) => [property.id, property]));
         const projectList = normaliseList(projectsData);
-        const groupProjects = projectList.filter((project) => `${project.group}` === `${groupId}`);
+        const groupProjects = projectList
+          .filter((project) => `${project.group}` === `${groupId}`)
+          .map((project) => ({ ...project, active_investors: propertyById.get(project.id)?.active_investors ?? 0 }));
         setProjects(groupProjects);
 
         const projectIdSet = new Set(groupProjects.map((project) => project.id));
@@ -494,8 +462,14 @@ const GroupDetailPage = () => {
     [projects, designAssetsByProject],
   );
 
-  const fundingTotals = useMemo(() => accumulateCurrencyTotals(projects, 'funding_goal'), [projects]);
-  const currentValueTotals = useMemo(() => accumulateCurrencyTotals(projects, 'current_value'), [projects]);
+  const totalProjectInvestors = useMemo(
+    () => projects.reduce((sum, project) => sum + (Number(project.active_investors) || 0), 0),
+    [projects],
+  );
+  const totalDesignAssets = useMemo(
+    () => Object.values(designAssetsByProject).reduce((sum, assets) => sum + assets.length, 0),
+    [designAssetsByProject],
+  );
 
   const statusBuckets = useMemo(
     () =>
@@ -1047,14 +1021,14 @@ const GroupDetailPage = () => {
             </p>
           </div>
           <div className="rounded-3xl border border-slate-100 bg-white p-5 shadow-card">
-            <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">Funding goal</p>
-            <p className="mt-2 text-lg font-semibold text-slate-900">{formatCurrencyBuckets(fundingTotals)}</p>
-            <p className="mt-1 text-xs text-slate-500">Target capital required across the portfolio</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">Co-investors</p>
+            <p className="mt-2 text-2xl font-semibold text-slate-900">{totalProjectInvestors}</p>
+            <p className="mt-1 text-xs text-slate-500">Investors across every project in this group</p>
           </div>
           <div className="rounded-3xl border border-slate-100 bg-white p-5 shadow-card">
-            <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">Amount raised</p>
-            <p className="mt-2 text-lg font-semibold text-slate-900">{formatCurrencyBuckets(currentValueTotals)}</p>
-            <p className="mt-1 text-xs text-slate-500">Progress based on reported contributions</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">Design assets</p>
+            <p className="mt-2 text-2xl font-semibold text-slate-900">{totalDesignAssets}</p>
+            <p className="mt-1 text-xs text-slate-500">Shared across all projects</p>
           </div>
           <div className="rounded-3xl border border-slate-100 bg-white p-5 shadow-card">
             <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">Governance</p>
@@ -1084,8 +1058,21 @@ const GroupDetailPage = () => {
                 return (
                   <article
                     key={project.id}
-                    className="flex h-full flex-col justify-between rounded-3xl border border-slate-100 bg-white p-6 shadow-card transition duration-200 ease-in-out hover:border-primary/30 hover:shadow-lg"
+                    className="flex h-full flex-col justify-between overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-card transition duration-200 ease-in-out hover:border-primary/30 hover:shadow-lg"
                   >
+                    {project.featured_image ? (
+                      <div className="h-40 w-full overflow-hidden bg-slate-100">
+                        <img
+                          src={sanitizeUrl(project.featured_image)}
+                          alt={project.name}
+                          className="h-full w-full object-cover"
+                          onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                          }}
+                        />
+                      </div>
+                    ) : null}
+                    <div className="flex flex-1 flex-col justify-between p-6">
                     <div>
                       <div className="flex items-start justify-between gap-3">
                         <div>
@@ -1103,19 +1090,18 @@ const GroupDetailPage = () => {
                       </p>
                     </div>
 
+                    <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-1 text-sm text-slate-600">
+                      <p>
+                        <span className="text-slate-400">Investors.</span>{' '}
+                        <span className="font-semibold text-slate-900">{project.active_investors || 0} co-investors</span>
+                      </p>
+                      <p>
+                        <span className="text-slate-400">Investment:</span>{' '}
+                        <span className="font-semibold text-slate-900">Undisclosed</span>
+                      </p>
+                    </div>
+
                     <div className="mt-5 grid gap-3 text-xs text-slate-500 sm:grid-cols-2">
-                      <div className="rounded-2xl bg-slate-50 px-4 py-3">
-                        <p className="font-semibold text-slate-900">
-                          {formatProjectAmount(project.funding_goal, project.currency)}
-                        </p>
-                        <p>Funding goal</p>
-                      </div>
-                      <div className="rounded-2xl bg-slate-50 px-4 py-3">
-                        <p className="font-semibold text-slate-900">
-                          {formatProjectAmount(project.current_value, project.currency)}
-                        </p>
-                        <p>Amount raised</p>
-                      </div>
                       <div className="rounded-2xl bg-slate-50 px-4 py-3">
                         <p className="font-semibold text-slate-900">{project.location || 'To be confirmed'}</p>
                         <p>Location</p>
@@ -1127,6 +1113,12 @@ const GroupDetailPage = () => {
                     </div>
 
                     <div className="mt-6 flex flex-wrap items-center gap-3">
+                      <Link
+                        to={`/groups/${group?.id}/projects/${project.id}`}
+                        className="rounded-pill bg-primary px-4 py-2 text-xs font-semibold text-white transition duration-150 ease-in-out hover:bg-primary/90"
+                      >
+                        View detail
+                      </Link>
                       {assets.length > 0 ? (
                         <button
                           type="button"
@@ -1135,14 +1127,8 @@ const GroupDetailPage = () => {
                         >
                           View design gallery
                         </button>
-                      ) : (
-                        <span className="rounded-pill border border-dashed border-slate-200 px-4 py-2 text-xs text-slate-400">
-                          No design assets
-                        </span>
-                      )}
-                      <span className="text-xs text-slate-400">
-                        Target ROI {formatProjectAmount(project.target_roi_percent, '') || '0'}%
-                      </span>
+                      ) : null}
+                    </div>
                     </div>
                   </article>
                 );
@@ -1300,7 +1286,7 @@ const GroupDetailPage = () => {
                     >
                       {asset.media_type === 'image' && asset.image ? (
                         <img
-                          src={asset.image}
+                          src={sanitizeUrl(asset.image)}
                           alt={asset.title}
                           className="h-40 w-full object-cover transition duration-200 ease-in-out group-hover:scale-105"
                         />

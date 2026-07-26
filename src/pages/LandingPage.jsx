@@ -5,12 +5,12 @@ import {
   submitLandingInvestmentInterest,
 } from "../api/superadmin";
 import { fetchCurrentUser, logoutUser } from "../api/users";
-import { fetchProjects } from "../api/projects";
-import { formatCurrency } from "../utils/currency";
+import { fetchProjects, fetchPropertyListings } from "../api/projects";
+import { fetchTestimonials, resolveTestimonialImageUrl } from "../api/testimonials";
+import { sanitizeUrl } from "../utils/url";
 import {
   navigationLinks,
   storyHighlights,
-  testimonials,
 } from "../data/landingContent";
 import { usePreferences } from "../context/PreferencesContext";
 
@@ -79,6 +79,8 @@ const LandingPage = () => {
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const [latestProjects, setLatestProjects] = useState([]);
   const [loadingProjects, setLoadingProjects] = useState(true);
+  const [testimonials, setTestimonials] = useState([]);
+  const [loadingTestimonials, setLoadingTestimonials] = useState(true);
   const userMenuRef = useRef(null);
   const langMenuRef = useRef(null);
   const { language, languages, setLanguage } = usePreferences();
@@ -108,11 +110,28 @@ const LandingPage = () => {
 
   useEffect(() => {
     let mounted = true;
-    fetchProjects({ ordering: "-created_at" })
-      .then((response) => {
+    // /api/v1/projects/projects/ has the `group` id needed to link "View
+    // details" to the right group, but not `active_investors` — that only
+    // exists on the properties serializer. Fetch both and merge by id.
+    Promise.all([fetchProjects({ ordering: "-created_at" }), fetchPropertyListings()])
+      .then(([projectsResponse, propertiesResponse]) => {
         if (!mounted) return;
-        const list = Array.isArray(response?.results) ? response.results : Array.isArray(response) ? response : [];
-        const sorted = [...list].sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+        const list = Array.isArray(projectsResponse?.results)
+          ? projectsResponse.results
+          : Array.isArray(projectsResponse)
+          ? projectsResponse
+          : [];
+        const propertyList = Array.isArray(propertiesResponse?.results)
+          ? propertiesResponse.results
+          : Array.isArray(propertiesResponse)
+          ? propertiesResponse
+          : [];
+        const propertyById = new Map(propertyList.map((property) => [property.id, property]));
+        const merged = list.map((project) => ({
+          ...project,
+          active_investors: propertyById.get(project.id)?.active_investors ?? 0,
+        }));
+        const sorted = [...merged].sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
         setLatestProjects(sorted.slice(0, 3));
       })
       .catch(() => {
@@ -123,6 +142,29 @@ const LandingPage = () => {
       .finally(() => {
         if (mounted) {
           setLoadingProjects(false);
+        }
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    fetchTestimonials()
+      .then((response) => {
+        if (!mounted) return;
+        const list = Array.isArray(response?.results) ? response.results : Array.isArray(response) ? response : [];
+        setTestimonials(list);
+      })
+      .catch(() => {
+        if (mounted) {
+          setTestimonials([]);
+        }
+      })
+      .finally(() => {
+        if (mounted) {
+          setLoadingTestimonials(false);
         }
       });
     return () => {
@@ -788,7 +830,7 @@ const LandingPage = () => {
                         {project.featured_image ? (
                           <div
                             className="h-full w-full bg-cover bg-center"
-                            style={{ backgroundImage: `url('${project.featured_image}')` }}
+                            style={{ backgroundImage: `url('${sanitizeUrl(project.featured_image)}')` }}
                           />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
@@ -810,23 +852,21 @@ const LandingPage = () => {
                         <div className="mt-auto grid gap-3 rounded-card bg-white p-4 text-sm text-slate-600">
                           <div className="flex items-center justify-between">
                             <span className="font-semibold text-slate-500">
-                              Funding goal
+                              Investors
                             </span>
                             <span className="font-medium text-slate-900">
-                              {formatCurrency(project.funding_goal, project.currency)}
+                              {project.active_investors || 0} co-investors
                             </span>
                           </div>
                           <div className="flex items-center justify-between border-t border-slate-100 pt-3">
                             <span className="font-semibold text-slate-500">
-                              Target ROI
+                              Investment
                             </span>
-                            <span className="font-medium text-primary">
-                              {project.target_roi_percent ? `${Number(project.target_roi_percent)}%` : "TBD"}
-                            </span>
+                            <span className="font-medium text-primary">Undisclosed</span>
                           </div>
                         </div>
                         <Link
-                          to="/groups"
+                          to={project.group ? `/groups/${project.group}` : "/groups"}
                           className="inline-flex items-center justify-center rounded-pill border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition duration-cozy ease-cozy hover:border-primary/60 hover:text-primary"
                         >
                           View details
@@ -1125,38 +1165,62 @@ const LandingPage = () => {
                 to Huye.
               </p>
             </div>
-            <div className="mt-12 overflow-x-auto pb-4">
-              <div className="flex gap-6">
-                {testimonials.map((testimonial) => (
-                  <blockquote
-                    key={testimonial.name}
-                    className="group relative flex w-80 min-w-[20rem] flex-col gap-6 rounded-card bg-white p-8 shadow-card transition duration-cozy ease-cozy hover:-translate-y-1 hover:shadow-2xl sm:w-96"
-                  >
-                    <div className="flex items-center gap-4">
-                      <img
-                        src={testimonial.image}
-                        alt={testimonial.name}
-                        className="h-14 w-14 rounded-full object-cover shadow-md"
-                      />
-                      <div>
-                        <p className="font-semibold text-slate-900">
-                          {testimonial.name}
-                        </p>
-                        <p className="text-xs font-medium uppercase tracking-widest text-primary">
-                          {testimonial.role}
-                        </p>
-                      </div>
-                    </div>
-                    <p className="font-serif text-sm text-slate-600">
-                      "{testimonial.quote}"
-                    </p>
-                    <span className="absolute right-6 top-6 text-4xl text-sunshine/60 transition duration-cozy ease-cozy group-hover:text-sunshine">
-                      "
-                    </span>
-                  </blockquote>
+            {loadingTestimonials ? (
+              <div className="mt-12 flex gap-6 overflow-x-auto pb-4">
+                {[0, 1, 2].map((placeholder) => (
+                  <div
+                    key={placeholder}
+                    className="h-56 w-80 min-w-[20rem] flex-shrink-0 animate-pulse rounded-card bg-porcelain sm:w-96"
+                  />
                 ))}
               </div>
-            </div>
+            ) : testimonials.length ? (
+              <div className="mt-12 overflow-x-auto pb-4">
+                <div className="flex gap-6">
+                  {testimonials.map((testimonial) => (
+                    <blockquote
+                      key={testimonial.id}
+                      className="group relative flex w-80 min-w-[20rem] flex-col gap-6 rounded-card bg-white p-8 shadow-card transition duration-cozy ease-cozy hover:-translate-y-1 hover:shadow-2xl sm:w-96"
+                    >
+                      <div className="flex items-center gap-4">
+                        {testimonial.image ? (
+                          <img
+                            src={resolveTestimonialImageUrl(testimonial.image)}
+                            alt={testimonial.name}
+                            onError={(event) => {
+                              event.currentTarget.style.display = "none";
+                            }}
+                            className="h-14 w-14 rounded-full object-cover shadow-md"
+                          />
+                        ) : (
+                          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary shadow-md">
+                            {(testimonial.name || "?").charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                        <div>
+                          <p className="font-semibold text-slate-900">
+                            {testimonial.name}
+                          </p>
+                          <p className="text-xs font-medium uppercase tracking-widest text-primary">
+                            {testimonial.title}
+                          </p>
+                        </div>
+                      </div>
+                      <p className="font-serif text-sm text-slate-600">
+                        "{testimonial.description}"
+                      </p>
+                      <span className="absolute right-6 top-6 text-4xl text-sunshine/60 transition duration-cozy ease-cozy group-hover:text-sunshine">
+                        "
+                      </span>
+                    </blockquote>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="mt-12 rounded-card bg-porcelain p-10 text-center text-sm text-slate-500">
+                Investor stories are on their way — check back soon.
+              </div>
+            )}
           </section>
 
           <section id="contact" className="bg-white py-20 sm:py-24">
@@ -1177,7 +1241,7 @@ const LandingPage = () => {
                   <div className="rounded-card bg-porcelain p-5">
                     <p className="font-semibold text-slate-700">Office</p>
                     <p className="mt-2 font-serif">
-                      45 KG 7 Ave, Kigali - Rwanda, and at Bugesera District
+                      Norskin Building, Kigali, Rwanda
                     </p>
                   </div>
                   <div className="rounded-card bg-porcelain p-5">

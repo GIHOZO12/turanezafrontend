@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import clsx from 'clsx';
+import { sanitizeUrl } from '../utils/url';
 
 const YOUTUBE_REGEX = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]+)/i;
 const VIMEO_REGEX = /vimeo\.com\/(\d+)/i;
@@ -99,7 +100,7 @@ const DesignAssetLightbox = ({
             </button>
 
             {asset.media_type === 'image' && asset.image ? (
-              <img src={asset.image} alt={asset.title} className="max-h-[480px] w-full rounded-2xl object-contain" />
+              <img src={sanitizeUrl(asset.image)} alt={asset.title} className="max-h-[480px] w-full rounded-2xl object-contain" />
             ) : null}
 
             {asset.media_type === 'video' ? (
