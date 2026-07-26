@@ -4,6 +4,10 @@ import { fetchApprovedPlots, fetchMemberships } from '../api/groups';
 import { fetchCurrentUser } from '../api/users';
 import InvestorLayout from '../components/InvestorLayout';
 import { formatCurrency } from '../utils/currency';
+import { sanitizeUrl } from '../utils/url';
+
+const resolvePlotImageUrl = (plot) =>
+  sanitizeUrl(plot?.plot_image_url || plot?.plot_image || plot?.image_url || plot?.image || null);
 
 const normaliseList = (payload) => {
   if (Array.isArray(payload?.results)) {
@@ -20,9 +24,23 @@ const formatRwf = (amount) => formatCurrency(amount, 'RWF', { maximumFractionDig
 const PlotCard = ({ plot, isOwner, membership }) => {
   const progress = plot.funding_progress;
   const isMember = Boolean(membership);
+  const imageUrl = resolvePlotImageUrl(plot);
 
   return (
-    <div className="flex flex-col justify-between rounded-3xl border border-slate-100 bg-white p-6 shadow-card">
+    <div className="flex flex-col justify-between overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-card">
+      {imageUrl ? (
+        <div className="h-40 w-full overflow-hidden bg-slate-100">
+          <img
+            src={imageUrl}
+            alt={plot.name}
+            className="h-full w-full object-cover"
+            onError={(event) => {
+              event.currentTarget.style.display = 'none';
+            }}
+          />
+        </div>
+      ) : null}
+      <div className="flex flex-1 flex-col justify-between p-6">
       <div>
         <div className="flex items-start justify-between gap-3">
           <div>
@@ -86,6 +104,7 @@ const PlotCard = ({ plot, isOwner, membership }) => {
           Request to join
         </Link>
       )}
+      </div>
     </div>
   );
 };
