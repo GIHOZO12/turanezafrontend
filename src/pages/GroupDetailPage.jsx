@@ -8,14 +8,12 @@ import {
   fetchGroupApplications,
   fetchGroupDocuments,
   reviewGroupApplication,
-  submitGroupApplication,
 } from '../api/groups';
 import { fetchProjects, fetchPropertyListings, fetchProjectDesignAssets, deleteProjectDesignAsset } from '../api/projects';
 import { fetchProposals } from '../api/governance';
 import { fetchCurrentUser } from '../api/users';
 import DesignAssetManager from '../components/DesignAssetManager';
 import DesignAssetLightbox from '../components/DesignAssetLightbox';
-import GroupApplicationModal from '../components/GroupApplicationModal';
 import GroupDocumentManager from '../components/GroupDocumentManager';
 import InvestorLayout from '../components/InvestorLayout';
 import { formatCurrency } from '../utils/currency';
@@ -149,8 +147,6 @@ const GroupDetailPage = () => {
   const [applicationsError, setApplicationsError] = useState(null);
   const [reviewSubmittingId, setReviewSubmittingId] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
-  const [applicationModalOpen, setApplicationModalOpen] = useState(false);
-  const [applicationSubmitting, setApplicationSubmitting] = useState(false);
 
   useEffect(() => {
     let alive = true;
@@ -357,40 +353,11 @@ const GroupDetailPage = () => {
     if (!group) {
       return;
     }
-    if (!currentUser) {
-      navigate(`/auth?next=${encodeURIComponent(`/groups/${group.id}`)}`);
-      return;
-    }
-    setFeedback(null);
-    setApplicationModalOpen(true);
+    navigate(`/groups/${group.id}/join`);
   };
 
   const handleSyncApplications = async () => {
     await loadGroupApplications({ role: membership?.role });
-  };
-
-  const handleApplicationSubmit = async (payload) => {
-    if (!group) {
-      return;
-    }
-
-    setApplicationSubmitting(true);
-    try {
-      const response = await submitGroupApplication(payload);
-      setApplicationModalOpen(false);
-      setFeedback({
-        type: 'success',
-        message: `Application ${response?.application_number || ''} submitted. Check your email for next steps.`.trim(),
-      });
-      await loadGroupApplications({ role: membership?.role, silent: true });
-    } catch (submitError) {
-      setFeedback({
-        type: 'error',
-        message: submitError.message || 'Unable to submit your application right now.',
-      });
-    } finally {
-      setApplicationSubmitting(false);
-    }
   };
 
   const decisionMessages = {
@@ -1392,18 +1359,6 @@ const GroupDetailPage = () => {
         hasNextProject={hasNextProject}
         canDelete={isAdmin}
         onDelete={isAdmin ? handleDeleteAsset : undefined}
-      />
-
-      <GroupApplicationModal
-        open={applicationModalOpen}
-        group={group}
-        submitting={applicationSubmitting}
-        onClose={() => {
-          if (!applicationSubmitting) {
-            setApplicationModalOpen(false);
-          }
-        }}
-        onSubmit={handleApplicationSubmit}
       />
     </InvestorLayout>
   );
