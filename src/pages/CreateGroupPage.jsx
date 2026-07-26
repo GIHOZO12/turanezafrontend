@@ -10,6 +10,7 @@ const defaultForm = {
   plot_size_sqm: '',
   land_title_number: '',
   ownership_proof: null,
+  plot_image: null,
 };
 
 const CreateGroupPage = () => {
@@ -68,6 +69,10 @@ const CreateGroupPage = () => {
       next.ownership_proof = 'Attach a document proving this plot belongs to you.';
     }
 
+    if (!form.plot_image) {
+      next.plot_image = 'Attach at least one photo of the plot.';
+    }
+
     return next;
   };
 
@@ -89,6 +94,7 @@ const CreateGroupPage = () => {
       payload.append('plot_size_sqm', Number(form.plot_size_sqm));
       payload.append('land_title_number', form.land_title_number.trim());
       payload.append('ownership_proof', form.ownership_proof);
+      payload.append('plot_image', form.plot_image);
       await submitPlotSubmission(payload);
       setSubmitted(true);
     } catch (error) {
@@ -124,7 +130,8 @@ const CreateGroupPage = () => {
     !Number.isFinite(parsedPlotSize) ||
     parsedPlotSize <= 0 ||
     !form.land_title_number.trim() ||
-    !form.ownership_proof;
+    !form.ownership_proof ||
+    !form.plot_image;
 
   if (submitted) {
     return (
@@ -329,6 +336,33 @@ const CreateGroupPage = () => {
               ) : (
                 <p className="mt-1 text-xs text-slate-400">
                   Title deed, sale agreement, or another document proving this plot is yours. PDF or image, up to 10MB.
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold uppercase tracking-wide text-slate-500" htmlFor="plot-image">
+                Photo of the plot
+              </label>
+              <input
+                id="plot-image"
+                name="plot_image"
+                type="file"
+                accept=".jpg,.jpeg,.png,.webp"
+                onChange={handleChange}
+                className={clsx(
+                  'mt-2 w-full rounded-2xl border border-dashed bg-white px-4 py-3 text-sm text-slate-600 focus:outline-none focus:ring-2',
+                  errors.plot_image
+                    ? 'border-rose-300 focus:border-rose-400 focus:ring-rose-100'
+                    : 'border-slate-300 focus:border-primary focus:ring-primary/10'
+                )}
+                aria-invalid={Boolean(errors.plot_image)}
+              />
+              {errors.plot_image ? (
+                <p className="mt-1 text-xs text-rose-500">{errors.plot_image}</p>
+              ) : (
+                <p className="mt-1 text-xs text-slate-400">
+                  A clear photo of the plot itself, so reviewers and future investors can see what it looks like.
                 </p>
               )}
             </div>
