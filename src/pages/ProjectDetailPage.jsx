@@ -65,10 +65,13 @@ const ProjectDetailPage = () => {
 
   const gallery = [
     ...(project.featured_image_url ? [{ id: 'featured', image_url: sanitizeUrl(project.featured_image_url) }] : []),
-    // "images" isn't live on the backend yet (pending deploy) — this is
-    // forward-compatible so the gallery lights up automatically once it is.
+    // The "images" array from the properties endpoint is a plain list of URL
+    // strings, not objects — handle both shapes in case that ever changes.
     ...(Array.isArray(project.images)
-      ? project.images.map((image) => ({ ...image, image_url: sanitizeUrl(image.image_url || image.image) }))
+      ? project.images.map((image, index) => ({
+          id: `gallery-${index}`,
+          image_url: sanitizeUrl(typeof image === 'string' ? image : image?.image_url || image?.image),
+        }))
       : []),
   ];
   const highlights = Array.isArray(project.amenities) ? project.amenities : [];
