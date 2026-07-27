@@ -311,10 +311,7 @@ const AuthPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const queryParams = useMemo(() => new URLSearchParams(location.search), [location.search]);
-  const resetUid = queryParams.get("uid") || "";
-  const resetToken = queryParams.get("token") || "";
   const resetEmailFromQuery = queryParams.get("email") || "";
-  const isResetConfirmation = Boolean(resetUid && resetToken);
   const nextPath = queryParams.get("next") || "";
   const resolvePostLoginRoute = (user) => (isSafeNextPath(nextPath) ? nextPath : getPostLoginRoute(user));
 
@@ -324,10 +321,11 @@ const AuthPage = () => {
   const [loginForm, setLoginForm] = useState(loginDefaults);
   const [resetRequestEmail, setResetRequestEmail] = useState("");
   const [resetForm, setResetForm] = useState(resetDefaults);
+  const [resetStep, setResetStep] = useState("email");
+  const [resetCode, setResetCode] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
   const [pendingEmail, setPendingEmail] = useState("");
   const [needsVerification, setNeedsVerification] = useState(false);
-  const [resetRequested, setResetRequested] = useState(false);
   const [feedback, setFeedback] = useState(null);
   const [profile, setProfile] = useState(null);
   const [formLoading, setFormLoading] = useState(false);
@@ -416,8 +414,9 @@ const AuthPage = () => {
     setNeedsVerification(false);
     setPendingEmail("");
     setVerificationCode("");
-    setResetRequested(false);
     setResetForm(resetDefaults);
+    setResetStep("email");
+    setResetCode("");
   };
 
   const handleTabChange = (nextMode) => {
@@ -489,13 +488,37 @@ const AuthPage = () => {
     setResetRequestLoading(true);
     try {
       await requestPasswordReset({ email: resetRequestEmail.trim() });
-      setResetRequested(true);
-      setFeedback({ type: "success", message: "If an account with that email exists, password reset instructions have been sent." });
+      setResetCode("");
+      setResetStep("code");
+      setFeedback({ type: "success", message: "If an account with that email exists, a 6-digit reset code has been sent to it." });
     } catch (error) {
-      setFeedback({ type: "error", message: extractErrorMessage(error, "Unable to send password reset instructions right now.") });
+      setFeedback({ type: "error", message: extractErrorMessage(error, "Unable to send a password reset code right now.") });
     } finally {
       setResetRequestLoading(false);
     }
+  };
+
+  const handleResendResetCode = async () => {
+    if (!resetRequestEmail.trim()) return setFeedback({ type: "error", message: "Provide an email before requesting a new code." });
+    setResetRequestLoading(true);
+    try {
+      await requestPasswordReset({ email: resetRequestEmail.trim() });
+      setFeedback({ type: "success", message: "A new 6-digit reset code has been sent to your email." });
+    } catch (error) {
+      setFeedback({ type: "error", message: extractErrorMessage(error, "Unable to resend the reset code right now.") });
+    } finally {
+      setResetRequestLoading(false);
+    }
+  };
+
+  const handleResetCodeSubmit = (event) => {
+    event.preventDefault();
+    setFeedback(null);
+    if (!/^[0-9]{6}$/.test(resetCode.trim())) {
+      setFeedback({ type: "error", message: "Reset code must be exactly 6 digits." });
+      return;
+    }
+    setResetStep("password");
   };
 
   const handleResetConfirmSubmit = async (event) => {
@@ -507,12 +530,17 @@ const AuthPage = () => {
     }
     setResetConfirmLoading(true);
     try {
-      await confirmPasswordReset({ uid: resetUid, token: resetToken, password: resetForm.password, confirm_password: resetForm.confirmPassword });
+      await confirmPasswordReset({
+        email: resetRequestEmail.trim(),
+        code: resetCode.trim(),
+        password: resetForm.password,
+        confirm_password: resetForm.confirmPassword,
+      });
       setResetForm(resetDefaults);
       setFeedback({ type: "success", message: "Password updated successfully. You can now log in with your new password." });
       setQueryMode("login");
     } catch (error) {
-      setFeedback({ type: "error", message: extractErrorMessage(error, "This password reset link is invalid or has expired.") });
+      setFeedback({ type: "error", message: extractErrorMessage(error, "That code is invalid or has expired. Go back and request a new one.") });
     } finally {
       setResetConfirmLoading(false);
     }
@@ -606,7 +634,16 @@ const AuthPage = () => {
   }, [googleClientId, mode, navigate]);
 
   const activeStageLabel = useMemo(() => membershipStages.find((item) => item.id === activeTier)?.label || membershipStages[0].label, [activeTier]);
-  const authTitle = mode === "signup" ? "Create your member profile" : mode === "reset" ? isResetConfirmation ? "Choose a new password" : "Reset your password" : "Log into your account";
+  const authTitle =
+    mode === "signup"
+      ? "Create your member profile"
+      : mode === "reset"
+      ? resetStep === "password"
+        ? "Choose a new password"
+        : resetStep === "code"
+        ? "Enter your reset code"
+        : "Reset your password"
+      : "Log into your account";
   const renderGoogleFallback = () => (
     <>
       {googleClientId && !googleError ? (
@@ -681,21 +718,36 @@ const AuthPage = () => {
               </form>
             )}
 
-            {mode === "reset" && !isResetConfirmation && (
+            {mode === "reset" && resetStep === "email" && (
               <form onSubmit={handleResetRequestSubmit} className="space-y-5">
-                <div className="rounded-2xl bg-porcelain p-4 text-sm text-slate-600">Enter the email address linked to your account and we will send secure instructions to reset your password.</div>
+                <div className="rounded-2xl bg-porcelain p-4 text-sm text-slate-600">Enter the email address linked to your account and we will send you a 6-digit reset code.</div>
                 <div><label htmlFor="resetEmail" className="text-sm font-semibold text-slate-600">Email Address</label><input id="resetEmail" type="email" required value={resetRequestEmail} onChange={(e) => setResetRequestEmail(e.target.value)} placeholder="name@example.com" className={inputClass} /></div>
-                <button type="submit" disabled={resetRequestLoading} className={primaryButtonClass}>{resetRequestLoading ? "Sending instructions..." : "Send reset instructions"}</button>
-                {resetRequested && <p className="text-xs text-slate-500">Check your inbox and spam folder for the password reset email.</p>}
+                <button type="submit" disabled={resetRequestLoading} className={primaryButtonClass}>{resetRequestLoading ? "Sending code..." : "Send reset code"}</button>
               </form>
             )}
 
-            {mode === "reset" && isResetConfirmation && (
+            {mode === "reset" && resetStep === "code" && (
+              <form onSubmit={handleResetCodeSubmit} className="space-y-5">
+                <div className="rounded-2xl bg-porcelain p-4 text-sm text-slate-600">Enter the 6-digit code sent to <span className="font-semibold text-slate-700">{resetRequestEmail}</span>.</div>
+                <div>
+                  <label htmlFor="resetCode" className="text-sm font-semibold text-slate-600">Reset Code</label>
+                  <input id="resetCode" type="text" inputMode="numeric" pattern="[0-9]{6}" maxLength={6} required placeholder="123456" value={resetCode} onChange={(e) => setResetCode(e.target.value.replace(/[^0-9]/g, ""))} className={clsx(inputClass, "text-center text-lg font-semibold tracking-[0.5em]")} />
+                </div>
+                <button type="submit" className={primaryButtonClass}>Continue</button>
+                <div className="flex items-center justify-between gap-3 text-xs">
+                  <button type="button" onClick={() => setResetStep("email")} className="font-semibold text-primary transition duration-cozy ease-cozy hover:text-primary/80">Wrong email? Go back</button>
+                  <button type="button" onClick={handleResendResetCode} disabled={resetRequestLoading} className="font-semibold text-primary transition duration-cozy ease-cozy hover:text-primary/80 disabled:cursor-not-allowed disabled:opacity-70">{resetRequestLoading ? "Resending..." : "Resend code"}</button>
+                </div>
+              </form>
+            )}
+
+            {mode === "reset" && resetStep === "password" && (
               <form onSubmit={handleResetConfirmSubmit} className="space-y-5">
-                <div className="rounded-2xl bg-porcelain p-4 text-sm text-slate-600">Choose a new password for your account. This secure link can only be used for this password reset.</div>
+                <div className="rounded-2xl bg-porcelain p-4 text-sm text-slate-600">Choose a new password for your account.</div>
                 <div><label htmlFor="resetPassword" className="text-sm font-semibold text-slate-600">New Password</label><input id="resetPassword" name="password" type="password" required value={resetForm.password} onChange={(e) => setResetForm((prev) => ({ ...prev, password: e.target.value }))} placeholder="Enter a new password" className={inputClass} /></div>
                 <div><label htmlFor="resetConfirmPassword" className="text-sm font-semibold text-slate-600">Confirm New Password</label><input id="resetConfirmPassword" name="confirmPassword" type="password" required value={resetForm.confirmPassword} onChange={(e) => setResetForm((prev) => ({ ...prev, confirmPassword: e.target.value }))} placeholder="Re-enter your new password" className={inputClass} /></div>
                 <button type="submit" disabled={resetConfirmLoading} className={primaryButtonClass}>{resetConfirmLoading ? "Updating password..." : "Save new password"}</button>
+                <button type="button" onClick={() => setResetStep("code")} className="w-fit text-xs font-semibold text-primary transition duration-cozy ease-cozy hover:text-primary/80">Entered the wrong code? Go back</button>
               </form>
             )}
 

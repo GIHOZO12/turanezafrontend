@@ -354,8 +354,9 @@ const LandingPage = () => {
                 <span className="text-xl font-semibold">UEG</span>
               </div>
               <div>
-                <p className="text-lg font-semibold text-slate-900">
+                <p className="text-sm font-semibold text-slate-900  ">
                   Urban Evolution Group
+
                 </p>
                 <p className="text-sm text-slate-500">Turaneza App</p>
               </div>

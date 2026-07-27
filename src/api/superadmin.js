@@ -382,3 +382,47 @@ export const deleteSuperAdminProjectDesignAsset = (assetId) =>
     method: 'DELETE',
     headers: withAuthHeaders(),
   });
+
+// Dedicated super-admin-scoped group-document endpoints (Basic Auth) — the
+// plain /api/v1/groups/documents/ endpoint is JWT-only and always rejects
+// Basic Auth, same reasoning as the design-asset endpoints above.
+export const fetchSuperAdminGroupDocuments = (groupId) =>
+  apiRequest(`/api/v1/super-admin/groups/${groupId}/documents/`, {
+    method: 'GET',
+    headers: withAuthHeaders(),
+  });
+
+export const createSuperAdminGroupDocument = (groupId, formData) =>
+  apiRequest(`/api/v1/super-admin/groups/${groupId}/documents/`, {
+    method: 'POST',
+    body: formData,
+    headers: withAuthHeaders(),
+  });
+
+export const deleteSuperAdminGroupDocument = (documentId) =>
+  apiRequest(`/api/v1/super-admin/documents/${documentId}/`, {
+    method: 'DELETE',
+    headers: withAuthHeaders(),
+  });
+
+// Dedicated super-admin-scoped governance-proposal endpoints (Basic Auth) —
+// the plain /api/v1/governance/proposals/ endpoint is JWT-only, same
+// reasoning as the design-asset endpoints above.
+export const fetchSuperAdminProjectProposals = (projectId) =>
+  apiRequest(`/api/v1/super-admin/projects/${projectId}/proposals/`, {
+    method: 'GET',
+    headers: withAuthHeaders(),
+  });
+
+export const createSuperAdminProjectProposal = (projectId, payload = {}) =>
+  apiRequest(`/api/v1/super-admin/projects/${projectId}/proposals/`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+    headers: withAuthHeaders(),
+  });
+
+export const deleteSuperAdminProjectProposal = (proposalId) =>
+  apiRequest(`/api/v1/super-admin/proposals/${proposalId}/`, {
+    method: 'DELETE',
+    headers: withAuthHeaders(),
+  });

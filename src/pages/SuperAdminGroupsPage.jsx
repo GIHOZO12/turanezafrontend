@@ -13,7 +13,27 @@ import {
   replaceGroupAdmin,
   unmarkGroupAdmin,
   postGroupAnnouncement,
+  fetchSuperAdminProjects,
+  fetchSuperAdminGroupDocuments,
+  createSuperAdminGroupDocument,
+  deleteSuperAdminGroupDocument,
+  fetchSuperAdminProjectDesignAssets,
+  createSuperAdminProjectDesignAsset,
+  deleteSuperAdminProjectDesignAsset,
+  fetchSuperAdminProjectProposals,
+  createSuperAdminProjectProposal,
+  deleteSuperAdminProjectProposal,
 } from '../api/superadmin';
+
+const documentTypeOptions = [
+  { value: 'architectural', label: 'Architectural drawings' },
+  { value: 'boq', label: 'BOQs (Bill of Quantities)' },
+  { value: 'legal', label: 'Legal PDFs' },
+  { value: 'other', label: 'Other' },
+];
+
+const defaultDocForm = { documentType: 'architectural', title: '', files: [] };
+const defaultProposalForm = { title: '', description: '', votingDeadline: '', status: 'open' };
 import { useNavigate } from 'react-router-dom';
 
 const statusBadge = (status) => {
@@ -40,6 +60,27 @@ const SuperAdminGroupsPage = () => {
   const [actionNote, setActionNote] = useState('');
   const [reasonNote, setReasonNote] = useState('');
   const [actionId, setActionId] = useState(null);
+
+  const [documents, setDocuments] = useState([]);
+  const [documentsLoading, setDocumentsLoading] = useState(false);
+  const [documentsError, setDocumentsError] = useState(null);
+  const [docForm, setDocForm] = useState(defaultDocForm);
+  const [docSubmitting, setDocSubmitting] = useState(false);
+
+  const [groupProjects, setGroupProjects] = useState([]);
+  const [activeProjectId, setActiveProjectId] = useState('');
+
+  const [galleryAssets, setGalleryAssets] = useState([]);
+  const [galleryLoading, setGalleryLoading] = useState(false);
+  const [galleryError, setGalleryError] = useState(null);
+  const [galleryFiles, setGalleryFiles] = useState([]);
+  const [galleryUploading, setGalleryUploading] = useState(false);
+
+  const [proposals, setProposals] = useState([]);
+  const [proposalsLoading, setProposalsLoading] = useState(false);
+  const [proposalsError, setProposalsError] = useState(null);
+  const [proposalForm, setProposalForm] = useState(defaultProposalForm);
+  const [proposalSubmitting, setProposalSubmitting] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -189,6 +230,201 @@ const SuperAdminGroupsPage = () => {
       setError(err.message || 'Unable to remove investor.');
     } finally {
       setActionId(null);
+    }
+  };
+
+  const loadGroupDocuments = useCallback(async (groupId) => {
+    setDocumentsLoading(true);
+    setDocumentsError(null);
+    try {
+      const response = await fetchSuperAdminGroupDocuments(groupId);
+      setDocuments(Array.isArray(response) ? response : response.results || []);
+    } catch (err) {
+      setDocumentsError(err.message || 'Unable to load group documents.');
+      setDocuments([]);
+    } finally {
+      setDocumentsLoading(false);
+    }
+  }, []);
+
+  const loadGroupProjects = useCallback(async (groupId) => {
+    try {
+      const response = await fetchSuperAdminProjects(`?group=${groupId}`);
+      const list = Array.isArray(response) ? response : response.results || [];
+      setGroupProjects(list);
+      setActiveProjectId((prev) => (list.some((project) => String(project.id) === String(prev)) ? prev : list[0]?.id || ''));
+    } catch (err) {
+      setGroupProjects([]);
+      setActiveProjectId('');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!selected?.id) {
+      setDocuments([]);
+      setGroupProjects([]);
+      setActiveProjectId('');
+      return;
+    }
+    loadGroupDocuments(selected.id);
+    loadGroupProjects(selected.id);
+  }, [selected?.id, loadGroupDocuments, loadGroupProjects]);
+
+  const loadGallery = useCallback(async (projectId) => {
+    if (!projectId) {
+      setGalleryAssets([]);
+      return;
+    }
+    setGalleryLoading(true);
+    setGalleryError(null);
+    try {
+      const response = await fetchSuperAdminProjectDesignAssets(projectId);
+      const list = Array.isArray(response) ? response : response.results || [];
+      setGalleryAssets(list);
+    } catch (err) {
+      setGalleryError(err.message || 'Unable to load design assets.');
+      setGalleryAssets([]);
+    } finally {
+      setGalleryLoading(false);
+    }
+  }, []);
+
+  const loadProposals = useCallback(async (projectId) => {
+    if (!projectId) {
+      setProposals([]);
+      return;
+    }
+    setProposalsLoading(true);
+    setProposalsError(null);
+    try {
+      const response = await fetchSuperAdminProjectProposals(projectId);
+      const list = Array.isArray(response) ? response : response.results || [];
+      setProposals(list);
+    } catch (err) {
+      setProposalsError(err.message || 'Unable to load proposals.');
+      setProposals([]);
+    } finally {
+      setProposalsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadGallery(activeProjectId);
+    loadProposals(activeProjectId);
+  }, [activeProjectId, loadGallery, loadProposals]);
+
+  const handleDocFormChange = (event) => {
+    const { name, value } = event.target;
+    setDocForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleUploadDocuments = async (event) => {
+    event.preventDefault();
+    if (!selected) return;
+    const files = Array.from(docForm.files || []);
+    if (files.length === 0) {
+      setDocumentsError('Choose at least one file to upload.');
+      return;
+    }
+    setDocSubmitting(true);
+    setDocumentsError(null);
+    try {
+      for (const file of files) {
+        const payload = new FormData();
+        payload.append('group', selected.id);
+        payload.append('document_type', docForm.documentType);
+        const baseTitle = docForm.title.trim();
+        const derivedTitle = baseTitle ? (files.length === 1 ? baseTitle : `${baseTitle} - ${file.name}`) : '';
+        if (derivedTitle) payload.append('title', derivedTitle.slice(0, 255));
+        payload.append('file', file);
+        await createSuperAdminGroupDocument(selected.id, payload);
+      }
+      setDocForm(defaultDocForm);
+      await loadGroupDocuments(selected.id);
+    } catch (err) {
+      setDocumentsError(err.message || 'Unable to upload these documents right now.');
+    } finally {
+      setDocSubmitting(false);
+    }
+  };
+
+  const handleDeleteDocument = async (documentId) => {
+    try {
+      await deleteSuperAdminGroupDocument(documentId);
+      setDocuments((prev) => prev.filter((doc) => doc.id !== documentId));
+    } catch (err) {
+      setDocumentsError(err.message || 'Unable to remove this document.');
+    }
+  };
+
+  const handleUploadGalleryImages = async () => {
+    if (!activeProjectId || galleryFiles.length === 0) return;
+    setGalleryUploading(true);
+    setGalleryError(null);
+    try {
+      const project = groupProjects.find((item) => String(item.id) === String(activeProjectId));
+      for (const file of galleryFiles) {
+        const payload = new FormData();
+        payload.append('project', activeProjectId);
+        payload.append('title', `${project?.name || 'Design asset'} - ${file.name}`.slice(0, 255));
+        payload.append('media_type', 'image');
+        payload.append('image', file);
+        await createSuperAdminProjectDesignAsset(activeProjectId, payload);
+      }
+      setGalleryFiles([]);
+      await loadGallery(activeProjectId);
+    } catch (err) {
+      setGalleryError(err.message || 'Unable to upload these images right now.');
+    } finally {
+      setGalleryUploading(false);
+    }
+  };
+
+  const handleDeleteGalleryAsset = async (assetId) => {
+    try {
+      await deleteSuperAdminProjectDesignAsset(assetId);
+      setGalleryAssets((prev) => prev.filter((asset) => asset.id !== assetId));
+    } catch (err) {
+      setGalleryError(err.message || 'Unable to remove this asset.');
+    }
+  };
+
+  const handleProposalFormChange = (event) => {
+    const { name, value } = event.target;
+    setProposalForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleCreateProposal = async (event) => {
+    event.preventDefault();
+    if (!activeProjectId) return;
+    if (!proposalForm.title.trim() || !proposalForm.description.trim() || !proposalForm.votingDeadline) {
+      setProposalsError('Title, description, and voting deadline are all required.');
+      return;
+    }
+    setProposalSubmitting(true);
+    setProposalsError(null);
+    try {
+      await createSuperAdminProjectProposal(activeProjectId, {
+        title: proposalForm.title.trim(),
+        description: proposalForm.description.trim(),
+        voting_deadline: new Date(proposalForm.votingDeadline).toISOString(),
+        status: proposalForm.status,
+      });
+      setProposalForm(defaultProposalForm);
+      await loadProposals(activeProjectId);
+    } catch (err) {
+      setProposalsError(err.message || 'Unable to publish this proposal right now.');
+    } finally {
+      setProposalSubmitting(false);
+    }
+  };
+
+  const handleDeleteProposal = async (proposalId) => {
+    try {
+      await deleteSuperAdminProjectProposal(proposalId);
+      setProposals((prev) => prev.filter((proposal) => proposal.id !== proposalId));
+    } catch (err) {
+      setProposalsError(err.message || 'Unable to remove this proposal.');
     }
   };
 
@@ -410,6 +646,272 @@ const SuperAdminGroupsPage = () => {
                     <p className="text-slate-500">No active members loaded.</p>
                   )}
                 </div>
+              </div>
+
+              <div className="rounded-2xl border border-slate-100 px-4 py-3">
+                <p className="text-sm font-semibold text-slate-900">Group documents</p>
+                <p className="mt-1 text-xs text-slate-400">
+                  Architectural drawings, BOQs, and legal PDFs shared with this group's investors.
+                </p>
+
+                {documentsError ? (
+                  <div className="mt-3 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-600">
+                    {documentsError}
+                  </div>
+                ) : null}
+
+                <div className="mt-3 space-y-2 text-xs">
+                  {documentsLoading ? (
+                    <p className="text-slate-500">Loading documents...</p>
+                  ) : documents.length ? (
+                    documents.map((doc) => (
+                      <div
+                        key={doc.id}
+                        className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-slate-100 px-3 py-2"
+                      >
+                        <div className="min-w-0">
+                          <p className="truncate font-semibold text-slate-700">
+                            {doc.title || (doc.file ? doc.file.split('/').pop() : 'Document')}
+                          </p>
+                          <p className="text-slate-400">
+                            {documentTypeOptions.find((opt) => opt.value === doc.document_type)?.label || doc.document_type}
+                          </p>
+                        </div>
+                        <div className="flex flex-shrink-0 items-center gap-2">
+                          {doc.file ? (
+                            <a
+                              href={doc.file}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="rounded-pill border border-slate-200 px-3 py-1 font-semibold text-slate-600 transition hover:border-primary/40 hover:text-primary"
+                            >
+                              View
+                            </a>
+                          ) : null}
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteDocument(doc.id)}
+                            className="rounded-pill border border-rose-200 px-3 py-1 font-semibold text-rose-600 transition hover:bg-rose-50"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-slate-500">No documents uploaded yet.</p>
+                  )}
+                </div>
+
+                <form onSubmit={handleUploadDocuments} className="mt-4 space-y-2 border-t border-slate-100 pt-3">
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    <select
+                      name="documentType"
+                      value={docForm.documentType}
+                      onChange={handleDocFormChange}
+                      className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs"
+                    >
+                      {documentTypeOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                    <input
+                      name="title"
+                      value={docForm.title}
+                      onChange={handleDocFormChange}
+                      placeholder="Title (optional)"
+                      className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs"
+                    />
+                  </div>
+                  <input
+                    type="file"
+                    multiple
+                    accept=".pdf,image/*"
+                    onChange={(e) => setDocForm((prev) => ({ ...prev, files: e.target.files || [] }))}
+                    className="w-full rounded-xl border border-dashed border-slate-300 px-3 py-2 text-xs"
+                  />
+                  <button
+                    type="submit"
+                    disabled={docSubmitting}
+                    className="w-full rounded-pill bg-primary px-3 py-2 text-xs font-semibold text-white transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:bg-primary/60"
+                  >
+                    {docSubmitting ? 'Uploading...' : 'Upload document(s)'}
+                  </button>
+                </form>
+              </div>
+
+              <div className="rounded-2xl border border-slate-100 px-4 py-3">
+                <p className="text-sm font-semibold text-slate-900">Architectural design library</p>
+                <p className="mt-1 text-xs text-slate-400">
+                  Floor plans, elevations, and renderings for this group's project.
+                </p>
+
+                {groupProjects.length === 0 ? (
+                  <p className="mt-3 text-xs text-slate-500">
+                    This group has no project yet — create one from the Projects page before adding design assets.
+                  </p>
+                ) : (
+                  <>
+                    {groupProjects.length > 1 ? (
+                      <select
+                        value={activeProjectId}
+                        onChange={(e) => setActiveProjectId(e.target.value)}
+                        className="mt-3 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs"
+                      >
+                        {groupProjects.map((project) => (
+                          <option key={project.id} value={project.id}>
+                            {project.name}
+                          </option>
+                        ))}
+                      </select>
+                    ) : null}
+
+                    {galleryError ? (
+                      <div className="mt-3 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-600">
+                        {galleryError}
+                      </div>
+                    ) : null}
+
+                    {galleryLoading ? (
+                      <p className="mt-3 text-xs text-slate-500">Loading design assets...</p>
+                    ) : galleryAssets.length ? (
+                      <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                        {galleryAssets.map((asset) => (
+                          <div key={asset.id} className="group relative overflow-hidden rounded-2xl bg-slate-100">
+                            {asset.media_type === 'image' && asset.image ? (
+                              <img src={asset.image} alt={asset.title || ''} className="h-24 w-full object-cover" />
+                            ) : (
+                              <div className="flex h-24 w-full items-center justify-center bg-slate-900 text-[10px] font-semibold uppercase text-white">
+                                Video embed
+                              </div>
+                            )}
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteGalleryAsset(asset.id)}
+                              className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-slate-900/70 text-xs text-white opacity-0 transition group-hover:opacity-100"
+                            >
+                              &times;
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="mt-3 text-xs text-slate-500">No design assets uploaded yet.</p>
+                    )}
+
+                    <div className="mt-4 space-y-2 border-t border-slate-100 pt-3">
+                      <input
+                        type="file"
+                        multiple
+                        accept="image/png,image/jpeg,image/webp"
+                        onChange={(e) => setGalleryFiles(Array.from(e.target.files || []))}
+                        className="w-full rounded-xl border border-dashed border-slate-300 px-3 py-2 text-xs"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleUploadGalleryImages}
+                        disabled={galleryUploading || galleryFiles.length === 0}
+                        className="w-full rounded-pill bg-primary px-3 py-2 text-xs font-semibold text-white transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:bg-primary/60"
+                      >
+                        {galleryUploading ? 'Uploading...' : `Upload ${galleryFiles.length || ''} image${galleryFiles.length === 1 ? '' : 's'}`.trim()}
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+
+              <div className="rounded-2xl border border-slate-100 px-4 py-3">
+                <p className="text-sm font-semibold text-slate-900">Governance highlights</p>
+                <p className="mt-1 text-xs text-slate-400">Publish proposals for this group's project and track votes.</p>
+
+                {groupProjects.length === 0 ? (
+                  <p className="mt-3 text-xs text-slate-500">
+                    This group has no project yet — create one from the Projects page before publishing proposals.
+                  </p>
+                ) : (
+                  <>
+                    {proposalsError ? (
+                      <div className="mt-3 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-600">
+                        {proposalsError}
+                      </div>
+                    ) : null}
+
+                    <div className="mt-3 space-y-2 text-xs">
+                      {proposalsLoading ? (
+                        <p className="text-slate-500">Loading proposals...</p>
+                      ) : proposals.length ? (
+                        proposals.map((proposal) => (
+                          <div
+                            key={proposal.id}
+                            className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-slate-100 px-3 py-2"
+                          >
+                            <div className="min-w-0">
+                              <p className="truncate font-semibold text-slate-700">{proposal.title}</p>
+                              <p className="text-slate-400">
+                                {proposal.status} - Deadline {new Date(proposal.voting_deadline).toLocaleString()}
+                              </p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteProposal(proposal.id)}
+                              className="flex-shrink-0 rounded-pill border border-rose-200 px-3 py-1 font-semibold text-rose-600 transition hover:bg-rose-50"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-slate-500">No proposals published yet.</p>
+                      )}
+                    </div>
+
+                    <form onSubmit={handleCreateProposal} className="mt-4 space-y-2 border-t border-slate-100 pt-3">
+                      <input
+                        name="title"
+                        value={proposalForm.title}
+                        onChange={handleProposalFormChange}
+                        placeholder="Proposal title"
+                        className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs"
+                      />
+                      <textarea
+                        name="description"
+                        value={proposalForm.description}
+                        onChange={handleProposalFormChange}
+                        rows={3}
+                        placeholder="Describe what investors are voting on"
+                        className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs"
+                      />
+                      <div className="grid gap-2 sm:grid-cols-2">
+                        <input
+                          type="datetime-local"
+                          name="votingDeadline"
+                          value={proposalForm.votingDeadline}
+                          onChange={handleProposalFormChange}
+                          className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs"
+                        />
+                        <select
+                          name="status"
+                          value={proposalForm.status}
+                          onChange={handleProposalFormChange}
+                          className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs"
+                        >
+                          <option value="open">Open</option>
+                          <option value="closed">Closed</option>
+                          <option value="executed">Executed</option>
+                        </select>
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={proposalSubmitting}
+                        className="w-full rounded-pill bg-primary px-3 py-2 text-xs font-semibold text-white transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:bg-primary/60"
+                      >
+                        {proposalSubmitting ? 'Publishing...' : 'Publish proposal'}
+                      </button>
+                    </form>
+                  </>
+                )}
               </div>
             </div>
           ) : (
