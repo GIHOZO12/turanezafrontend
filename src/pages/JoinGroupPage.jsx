@@ -22,15 +22,11 @@ const defaultForm = {
   occupation: 'employee',
   idNumber: '',
   motivation: '',
-  skills: '',
   hasExperience: false,
   financialReady: false,
   understandsCommitment: false,
   commitmentConfirmation: false,
   consentAcknowledged: false,
-  bankStatement: null,
-  criminalRecord: null,
-  notes: '',
 };
 
 const resolveCapacityTarget = (group) => {
@@ -185,15 +181,6 @@ const JoinGroupPage = () => {
     if (!form.motivation.trim()) {
       next.motivation = 'Tell us why you want to join.';
     }
-    if (!form.skills.trim()) {
-      next.skills = 'Share the skills or capital you bring.';
-    }
-    if (!form.bankStatement) {
-      next.bankStatement = 'Attach a recent bank statement or proof of funds.';
-    }
-    if (!form.criminalRecord) {
-      next.criminalRecord = 'Attach a recent certificate of good conduct.';
-    }
     if (!form.commitmentConfirmation) {
       next.commitmentConfirmation = 'Please confirm your understanding of the commitment.';
     }
@@ -226,19 +213,11 @@ const JoinGroupPage = () => {
       payload.append('occupation', form.occupation);
       payload.append('id_number', form.idNumber.trim());
       payload.append('motivation', form.motivation.trim());
-      payload.append('skills', form.skills.trim());
-      payload.append('notes', form.notes.trim());
       payload.append('has_experience', form.hasExperience ? 'true' : 'false');
       payload.append('financial_ready', form.financialReady ? 'true' : 'false');
       payload.append('understands_commitment', form.understandsCommitment ? 'true' : 'false');
       payload.append('commitment_confirmation', form.commitmentConfirmation ? 'true' : 'false');
       payload.append('consent_acknowledged', form.consentAcknowledged ? 'true' : 'false');
-      if (form.bankStatement) {
-        payload.append('proof_of_funds', form.bankStatement);
-      }
-      if (form.criminalRecord) {
-        payload.append('criminal_record', form.criminalRecord);
-      }
 
       const response = await submitGroupApplication(payload);
       navigate(`/applications/${response.id}/pay-commitment-fee`, { replace: true });
@@ -509,31 +488,6 @@ const JoinGroupPage = () => {
               )}
             </div>
 
-            <div className="mt-5">
-              <label className="text-xs font-semibold uppercase tracking-wide text-slate-500" htmlFor="jg-skills">
-                What value do you bring?
-              </label>
-              <textarea
-                id="jg-skills"
-                name="skills"
-                value={form.skills}
-                onChange={handleChange}
-                placeholder="Describe liquidity, experience, networks, or expertise you can offer other members."
-                className={clsx(
-                  'mt-2 h-24 w-full rounded-2xl border bg-white px-4 py-3 text-sm text-slate-900 shadow-inner focus:outline-none focus:ring-2',
-                  errors.skills
-                    ? 'border-rose-300 focus:border-rose-400 focus:ring-rose-100'
-                    : 'border-slate-200 focus:border-primary focus:ring-primary/10',
-                )}
-                maxLength={500}
-              />
-              {errors.skills ? (
-                <p className="mt-1 text-xs text-rose-500">{errors.skills}</p>
-              ) : (
-                <p className="mt-1 text-xs text-slate-400">Highlight concrete support you'll provide.</p>
-              )}
-            </div>
-
             <div className="mt-6 grid gap-4 rounded-3xl border border-slate-100 bg-slate-50 p-4 text-sm text-slate-600 md:grid-cols-2">
               <label className="flex items-center gap-3">
                 <input
@@ -580,66 +534,6 @@ const JoinGroupPage = () => {
               <p className="mt-1 text-xs text-rose-500">{errors.commitmentConfirmation}</p>
             ) : null}
 
-            <div className="mt-6 grid gap-5 md:grid-cols-2">
-              <div>
-                <label className="text-xs font-semibold uppercase tracking-wide text-slate-500" htmlFor="jg-bank">
-                  Bank statement / Proof of funds
-                </label>
-                <input
-                  id="jg-bank"
-                  name="bankStatement"
-                  type="file"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  onChange={handleChange}
-                  className={clsx(
-                    'mt-2 w-full rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-3 text-sm text-slate-600 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10',
-                    errors.bankStatement ? 'border-rose-300 focus:border-rose-400 focus:ring-rose-100' : '',
-                  )}
-                />
-                {errors.bankStatement ? (
-                  <p className="mt-1 text-xs text-rose-500">{errors.bankStatement}</p>
-                ) : (
-                  <p className="mt-1 text-xs text-slate-400">Upload a PDF or image no larger than 10MB.</p>
-                )}
-              </div>
-              <div>
-                <label className="text-xs font-semibold uppercase tracking-wide text-slate-500" htmlFor="jg-criminal">
-                  Criminal record / Certificate of good conduct
-                </label>
-                <input
-                  id="jg-criminal"
-                  name="criminalRecord"
-                  type="file"
-                  accept=".pdf,.jpg,.jpeg,.png"
-                  onChange={handleChange}
-                  className={clsx(
-                    'mt-2 w-full rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-3 text-sm text-slate-600 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10',
-                    errors.criminalRecord ? 'border-rose-300 focus:border-rose-400 focus:ring-rose-100' : '',
-                  )}
-                />
-                {errors.criminalRecord ? (
-                  <p className="mt-1 text-xs text-rose-500">{errors.criminalRecord}</p>
-                ) : (
-                  <p className="mt-1 text-xs text-slate-400">Recent (last 12 months) preferred.</p>
-                )}
-              </div>
-            </div>
-
-            <div className="mt-5">
-              <label className="text-xs font-semibold uppercase tracking-wide text-slate-500" htmlFor="jg-notes">
-                Additional notes (optional)
-              </label>
-              <textarea
-                id="jg-notes"
-                name="notes"
-                value={form.notes}
-                onChange={handleChange}
-                placeholder="Share compliance references, liquidity timelines, or anything the admin should know."
-                className="mt-2 h-20 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-inner focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
-                maxLength={500}
-              />
-            </div>
-
             <div className="mt-6 flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
               <input
                 id="jg-consent"
@@ -658,48 +552,7 @@ const JoinGroupPage = () => {
               <p className="mt-1 text-xs text-rose-500">{errors.consentAcknowledged}</p>
             ) : null}
 
-            {group?.created_by ? (
-              <div className="mt-8 rounded-3xl border border-primary/20 bg-primary/5 p-5 text-sm text-slate-600">
-                <p className="text-sm font-semibold text-primary">Need clarity before joining?</p>
-                <p className="mt-1 text-xs text-slate-500">
-                  Send a quick note to {group.created_by.full_name || group.created_by.email}. They will receive this
-                  message even if you are not yet a member.
-                </p>
-                {contactFeedback ? (
-                  <div
-                    className={clsx(
-                      'mt-3 rounded-2xl px-3 py-2 text-xs',
-                      contactFeedback.type === 'success'
-                        ? 'border border-emerald-200 bg-emerald-50 text-emerald-700'
-                        : 'border border-rose-200 bg-rose-50 text-rose-600',
-                    )}
-                  >
-                    {contactFeedback.message}
-                  </div>
-                ) : null}
-                <form onSubmit={handleContactAdmin} className="mt-3 space-y-3">
-                  <textarea
-                    value={contactMessage}
-                    onChange={(event) => setContactMessage(event.target.value)}
-                    rows={3}
-                    placeholder="Introduce yourself or ask a question..."
-                    className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm text-slate-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10"
-                  />
-                  <button
-                    type="submit"
-                    disabled={contactSending || !contactMessage.trim()}
-                    className={clsx(
-                      'rounded-pill px-4 py-2 text-xs font-semibold text-white transition duration-150 ease-in-out',
-                      contactSending || !contactMessage.trim()
-                        ? 'cursor-not-allowed bg-primary/60'
-                        : 'bg-primary hover:bg-primary/90',
-                    )}
-                  >
-                    {contactSending ? 'Sending...' : 'Send message'}
-                  </button>
-                </form>
-              </div>
-            ) : null}
+            
 
             <div className="mt-8 flex items-center justify-end gap-3">
               <Link
@@ -749,15 +602,6 @@ const JoinGroupPage = () => {
                   {group?.status ? group.status.charAt(0).toUpperCase() + group.status.slice(1) : 'Pending'}
                 </p>
               </div>
-            </div>
-
-            <div className="rounded-3xl border border-slate-200 bg-white p-5 text-xs text-slate-600 shadow-card">
-              <p className="text-sm font-semibold text-slate-900">Required documents</p>
-              <ul className="mt-2 list-disc space-y-1 pl-5">
-                <li>Recent bank statement or proof of funds.</li>
-                <li>Certificate of good conduct or criminal record clearance.</li>
-                <li>National ID or passport number.</li>
-              </ul>
             </div>
 
             <div className="rounded-3xl border border-slate-100 bg-slate-50 p-5 text-xs text-slate-600">

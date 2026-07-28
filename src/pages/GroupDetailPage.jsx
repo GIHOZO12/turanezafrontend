@@ -728,9 +728,8 @@ const GroupDetailPage = () => {
                   <p className="mt-1 text-xs text-slate-500">Based on confirmed investors</p>
                 </div>
                 <div className="rounded-2xl border border-slate-100 bg-white p-4">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Group lead</p>
-                  <p className="mt-2 text-lg font-semibold text-slate-900">{creatorName}</p>
-                  <p className="mt-1 text-xs text-slate-500">Status: {formatStatusLabel(group?.status)}</p>
+
+            
                 </div>
               </div>
             </div>

@@ -76,3 +76,9 @@ export const updateCurrentUser = (payload) =>
     method: 'PATCH',
     body: JSON.stringify(payload),
   });
+
+export const setPassword = (payload) =>
+  apiRequest(`${USERS_ROOT}/set-password/`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });

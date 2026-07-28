@@ -97,27 +97,8 @@ const GroupCard = ({ group, membership, onJoin, canJoin, isOwner = false }) => {
             {group.description ||
               "Collaborative investment circle within Urban Evolution Group."}
           </p>
-          <p className="mt-1 text-xs text-slate-400">
-            Lead: {leadName}
-            {leadEmail ? (
-              <span>
-                {" "}
-                •{" "}
-                <a
-                  href={`mailto:${leadEmail}`}
-                  className="text-primary hover:underline"
-                >
-                  {leadEmail}
-                </a>
-              </span>
-            ) : null}
-          </p>
-          <p className="mt-1 text-xs text-slate-400">
-            Created by{" "}
-            {group.created_by?.full_name ||
-              group.created_by?.email ||
-              "Urban Evolution Group"}
-          </p>
+          
+         
         </div>
       </div>
 

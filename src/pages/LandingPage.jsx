@@ -1242,7 +1242,7 @@ const LandingPage = () => {
                   <div className="rounded-card bg-porcelain p-5">
                     <p className="font-semibold text-slate-700">Office</p>
                     <p className="mt-2 font-serif">
-                      Norskin Building, Kigali, Rwanda
+                    Norrsken Building, Kigali, Rwanda
                     </p>
                   </div>
                   <div className="rounded-card bg-porcelain p-5">

@@ -88,7 +88,7 @@ const ProjectDetailPage = () => {
 
         {gallery.length > 0 ? (
           <div>
-            <div className="h-64 w-full overflow-hidden rounded-3xl bg-slate-100 sm:h-96">
+            <div className="h-[28rem] w-full overflow-hidden rounded-3xl bg-slate-100 sm:h-[42rem]">
               <img
                 src={gallery[activeImage]?.image_url || gallery[activeImage]?.image}
                 alt={project.name}
