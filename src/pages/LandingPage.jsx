@@ -354,10 +354,7 @@ const LandingPage = () => {
                 <span className="text-xl font-semibold">UEG</span>
               </div>
               <div>
-                <p className="text-sm font-semibold text-slate-900  ">
-                  Urban Evolution Group
-
-                </p>
+                <p className="text-sm font-semibold text-slate-900">Urban Evolution Group</p>
                 <p className="text-sm text-slate-500">Turaneza App</p>
               </div>
             </div>
@@ -638,9 +635,9 @@ const LandingPage = () => {
                   </a>
                 </div>
               </div>
-              <div className="relative w-full max-w-lg rounded-card bg-white/5 p-8 backdrop-blur">
+              <div className="relative w-full max-w-lg rounded-card bg-white/5 p-5 backdrop-blur sm:p-8">
                 <div className="grid gap-6">
-                  <div className="rounded-card bg-white/10 p-6 text-sm">
+                  <div className="rounded-card bg-white/10 p-5 text-sm sm:p-6">
                     <p className="text-sunshine font-semibold uppercase tracking-wider">
                       Our Promise
                     </p>
@@ -651,7 +648,7 @@ const LandingPage = () => {
                       activities.
                     </p>
                   </div>
-                  <div className="rounded-card bg-white/10 p-6 text-sm">
+                  <div className="rounded-card bg-white/10 p-5 text-sm sm:p-6">
                     <p className="text-mint font-semibold uppercase tracking-wider">
                       Impact Snapshot
                     </p>
@@ -683,7 +680,7 @@ const LandingPage = () => {
 
           <section className="bg-white py-16 sm:py-20">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              <div className="grid gap-8 xl:grid-cols-2">
+              <div className="grid gap-8 lg:grid-cols-2">
                 <div className="overflow-hidden rounded-card bg-white shadow-2xl">
                   <div className="h-[22rem] w-full bg-black sm:h-[26rem] lg:h-[30rem]">
                     <iframe
@@ -812,7 +809,7 @@ const LandingPage = () => {
                 </a>
               </div>
               {loadingProjects ? (
-                <div className="mt-12 grid gap-8 lg:grid-cols-3">
+                <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
                   {[0, 1, 2].map((placeholder) => (
                     <div
                       key={placeholder}
@@ -821,7 +818,7 @@ const LandingPage = () => {
                   ))}
                 </div>
               ) : latestProjects.length ? (
-                <div className="mt-12 grid gap-8 lg:grid-cols-3">
+                <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
                   {latestProjects.map((project) => (
                     <article
                       key={project.id}
@@ -1399,7 +1396,7 @@ const LandingPage = () => {
         </main>
 
         <footer className="bg-slate-900 text-white">
-          <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:grid-cols-[1.2fr,0.8fr,1fr] sm:px-6 lg:px-8">
+          <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:grid-cols-2 sm:px-6 md:grid-cols-[1.2fr,0.8fr,1fr] lg:px-8">
             <div>
               <div className="flex items-center gap-3">
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-white shadow-card">
