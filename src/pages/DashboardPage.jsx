@@ -200,7 +200,7 @@ const DashboardPage = () => {
                   depositPaid ? 'bg-emerald-500/20 text-emerald-50' : 'bg-amber-400/20 text-amber-50',
                 )}
               >
-                {depositPaid ? 'Engagement fee paid (refundable after first installment)' : 'Engagement fee pending'}
+                {depositPaid ? 'Engagement fee paid' : 'Engagement fee pending'}
               </span>
               {!depositPaid ? <span className="text-white/80">Pay within 30 days to unlock investor actions.</span> : null}
             </div>
