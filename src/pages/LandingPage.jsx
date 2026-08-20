@@ -695,10 +695,10 @@ const LandingPage = () => {
                   </div>
                   <div className="bg-white px-5 py-4 sm:px-6">
                     <p className="text-base font-semibold text-slate-900">
-                      Turaneza App, clearly explained and thoughtfully designed to solve real housing investment challenges.
+                      Turaneza App, clearly explained 
                     </p>
                     <p className="mt-2 text-sm text-slate-600">
-                      See how the platform brings people together, simplifies collaboration, and turns shared ambition into practical action.
+                      
                     </p>
                   </div>
                 </div>
@@ -716,10 +716,10 @@ const LandingPage = () => {
                   </div>
                   <div className="bg-white px-5 py-4 sm:px-6">
                     <p className="text-base font-semibold text-slate-900">
-                      Explore the Turaneza App journey with a guided walkthrough of its main features and flow.
+                      Explore the Turaneza App navigation journey 
                     </p>
                     <p className="mt-2 text-sm text-slate-600">
-                      This video shows how users can navigate the platform with confidence, from discovering opportunities to engaging with the tools that support secure participation.
+              
                     </p>
                   </div>
                 </div>
@@ -1245,7 +1245,7 @@ const LandingPage = () => {
                   <div className="rounded-card bg-porcelain p-5">
                     <p className="font-semibold text-slate-700">Support</p>
                     <p className="mt-2 font-serif">
-                      +250794199534 | info@turaneza.rw
+                  0785250953 | info@turaneza.rw
                     </p>
                   </div>
                   <div className="rounded-card bg-porcelain p-5">
