@@ -41,9 +41,13 @@ const HelpChatWidget = () => {
       setMessages((prev) => [...prev, { from: 'bot', text: response.reply }]);
     } catch (error) {
       const requiresLogin = error.status === 401 || error.status === 403;
+      // The backend sends both `detail` (safe to show) and `error` (the raw
+      // exception, e.g. a Gemini API URL/stack) — extractErrorMessage in
+      // client.js prefers `error` for generic responses, so read `detail`
+      // explicitly here rather than leaking internals into the chat bubble.
       const text = requiresLogin
         ? 'Please log in to chat with the assistant.'
-        : error.message || 'Sorry, the assistant is unavailable right now.';
+        : error.payload?.detail || 'Sorry, the assistant is unavailable right now.';
       setMessages((prev) => [...prev, { from: 'bot', text, isError: true, link: requiresLogin ? '/auth' : null }]);
     } finally {
       setSending(false);
