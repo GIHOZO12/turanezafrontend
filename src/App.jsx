@@ -38,7 +38,9 @@ import SuperAdminAuditLogsPage from "./pages/SuperAdminAuditLogsPage";
 import SuperAdminCompliancePage from "./pages/SuperAdminCompliancePage";
 import SuperAdminPlotsPage from "./pages/SuperAdminPlotsPage";
 import SuperAdminProjectsPage from "./pages/SuperAdminProjectsPage";
+import NotFoundPage from "./pages/NotFoundPage";
 import HelpChatWidget from "./components/HelpChatWidget";
+import { RequireAdmin, RequireSuperAdmin } from "./components/RouteGuards";
 
 const App = () => {
   return (
@@ -67,23 +69,27 @@ const App = () => {
         <Route path="/legal/docs/:slug" element={<LegalDocPage />} />
         <Route path="/account" element={<AccountPage />} />
         <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
-        <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
-        <Route path="/admin/users" element={<AdminUsersPage />} />
-        <Route path="/admin/groups" element={<AdminGroupsPage />} />
-        <Route path="/admin/investments" element={<AdminInvestmentsPage />} />
-        <Route path="/admin/compliance" element={<AdminCompliancePage />} />
+        <Route element={<RequireAdmin />}>
+          <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+          <Route path="/admin/users" element={<AdminUsersPage />} />
+          <Route path="/admin/groups" element={<AdminGroupsPage />} />
+          <Route path="/admin/investments" element={<AdminInvestmentsPage />} />
+          <Route path="/admin/compliance" element={<AdminCompliancePage />} />
+        </Route>
         <Route path="/super-admin/login" element={<SuperAdminLoginPage />} />
-        <Route path="/super-admin" element={<SuperAdminDashboard />} />
-        <Route path="/super-admin/payments" element={<SuperAdminPaymentsPage />} />
-        <Route path="/super-admin/payments/:proofId" element={<SuperAdminPaymentReviewPage />} />
-        <Route path="/super-admin/users" element={<SuperAdminUsersPage />} />
-        <Route path="/super-admin/compliance" element={<SuperAdminCompliancePage />} />
-        <Route path="/super-admin/plots" element={<SuperAdminPlotsPage />} />
-        <Route path="/super-admin/projects" element={<SuperAdminProjectsPage />} />
-        <Route path="/super-admin/groups" element={<SuperAdminGroupsPage />} />
-        <Route path="/super-admin/chats" element={<SuperAdminChatsPage />} />
-        <Route path="/super-admin/audit-logs" element={<SuperAdminAuditLogsPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route element={<RequireSuperAdmin />}>
+          <Route path="/super-admin" element={<SuperAdminDashboard />} />
+          <Route path="/super-admin/payments" element={<SuperAdminPaymentsPage />} />
+          <Route path="/super-admin/payments/:proofId" element={<SuperAdminPaymentReviewPage />} />
+          <Route path="/super-admin/users" element={<SuperAdminUsersPage />} />
+          <Route path="/super-admin/compliance" element={<SuperAdminCompliancePage />} />
+          <Route path="/super-admin/plots" element={<SuperAdminPlotsPage />} />
+          <Route path="/super-admin/projects" element={<SuperAdminProjectsPage />} />
+          <Route path="/super-admin/groups" element={<SuperAdminGroupsPage />} />
+          <Route path="/super-admin/chats" element={<SuperAdminChatsPage />} />
+          <Route path="/super-admin/audit-logs" element={<SuperAdminAuditLogsPage />} />
+        </Route>
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <HelpChatWidget />
     </BrowserRouter>

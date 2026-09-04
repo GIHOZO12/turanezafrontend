@@ -6,9 +6,6 @@ export const fetchTestimonials = () =>
     method: 'GET',
   });
 
-// The API returns a relative media path (e.g. "/media/testimonials/x.jpg"),
-// not a full URL — build it against the same backend the app is configured
-// to talk to.
 export const resolveTestimonialImageUrl = (path) => {
   if (!path) {
     return null;
