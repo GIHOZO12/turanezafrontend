@@ -12,11 +12,7 @@ const ChatIcon = (props) => (
   </svg>
 );
 
-// const suggestions = [
-//   'How do I register a plot?',
-//   'How do I join an investment group?',
-//   'How do payments work?',
-// ];
+
 
 const HelpChatWidget = () => {
   const navigate = useNavigate();
@@ -41,10 +37,7 @@ const HelpChatWidget = () => {
       setMessages((prev) => [...prev, { from: 'bot', text: response.reply }]);
     } catch (error) {
       const requiresLogin = error.status === 401 || error.status === 403;
-      // The backend sends both `detail` (safe to show) and `error` (the raw
-      // exception, e.g. a Gemini API URL/stack) — extractErrorMessage in
-      // client.js prefers `error` for generic responses, so read `detail`
-      // explicitly here rather than leaking internals into the chat bubble.
+   
       const text = requiresLogin
         ? 'Please log in to chat with the assistant.'
         : error.payload?.detail || 'Sorry, the assistant is unavailable right now.';
