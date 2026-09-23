@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import clsx from "clsx";
 import {
   submitLandingContactForm,
   submitLandingInvestmentInterest,
@@ -27,6 +28,101 @@ const CheckIcon = (props) => (
     <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
+
+const journeyToneStyles = {
+  green: { border: "border-emerald-300", badge: "bg-emerald-600", soft: "bg-emerald-50", text: "text-emerald-700" },
+  blue: { border: "border-primary/40", badge: "bg-primary", soft: "bg-blue-50", text: "text-primary" },
+  amber: { border: "border-orange-300", badge: "bg-orange-500", soft: "bg-orange-50", text: "text-orange-600" },
+  violet: { border: "border-violet-300", badge: "bg-violet-600", soft: "bg-violet-50", text: "text-violet-700" },
+  teal: { border: "border-teal-300", badge: "bg-teal-600", soft: "bg-teal-50", text: "text-teal-700" },
+};
+
+const journeyStages = [
+  { id: 1, title: "Sign Up / Login", tone: "green", detail: "Create an account, verify email, and prepare for KYC onboarding." },
+  { id: 2, title: "Become a Member", tone: "blue", detail: "Pay the commitment fee and move from Visitor to Member status." },
+  { id: 3, title: "Exploration & Education", tone: "amber", detail: "Study group rules, designs, legal standards, and investor responsibilities." },
+  { id: 4, title: "Create or Join a Group", tone: "violet", detail: "Launch a new investment group or join one that matches your goals." },
+  { id: 5, title: "Sign Compliance", tone: "teal", detail: "Review legal agreements, confirm compliance, and accept platform standards." },
+  { id: 6, title: "Pay Construction", tone: "teal", detail: "Track staged contributions and unlock investor badge upgrades." },
+  { id: 7, title: "Pay Management Fee", tone: "amber", detail: "Settle the 5% management fee generated from the project building cost." },
+  { id: 8, title: "Become an Owner", tone: "blue", detail: "Receive unit or house ownership confirmation when all obligations are complete." },
+  { id: 9, title: "Congratulations", tone: "green", detail: "Download final documents and enter the TURANEZA community as an owner." },
+];
+
+// Interactive click-through replacement for the "navigation journey" demo
+// video — walks the same 9-stage journey shown on the auth page, but as a
+// clickable stepper instead of passive footage.
+const JourneyExplorer = () => {
+  const [activeStageId, setActiveStageId] = useState(journeyStages[0].id);
+  const activeIndex = journeyStages.findIndex((stage) => stage.id === activeStageId);
+  const activeStage = journeyStages[activeIndex];
+  const tone = journeyToneStyles[activeStage.tone];
+
+  const goTo = (delta) => {
+    const nextIndex = (activeIndex + delta + journeyStages.length) % journeyStages.length;
+    setActiveStageId(journeyStages[nextIndex].id);
+  };
+
+  return (
+    <div className="flex h-[22rem] w-full flex-col bg-porcelain p-5 sm:h-[26rem] sm:p-6 lg:h-[30rem]">
+      <p className="text-xs font-semibold uppercase tracking-widest text-primary">
+        Explore the Turaneza App journey
+      </p>
+      <div className="mt-4 grid grid-cols-3 gap-2">
+        {journeyStages.map((stage) => {
+          const stageTone = journeyToneStyles[stage.tone];
+          const isActive = stage.id === activeStageId;
+          return (
+            <button
+              key={stage.id}
+              type="button"
+              onClick={() => setActiveStageId(stage.id)}
+              className={clsx(
+                "flex flex-col items-center gap-1 rounded-2xl border p-2 text-center transition duration-cozy ease-cozy",
+                isActive ? clsx(stageTone.border, stageTone.soft) : "border-slate-100 bg-white hover:border-slate-200",
+              )}
+            >
+              <span
+                className={clsx(
+                  "flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold text-white shadow-sm",
+                  stageTone.badge,
+                )}
+              >
+                {stage.id}
+              </span>
+              <span className={clsx("text-[11px] font-semibold leading-tight", isActive ? stageTone.text : "text-slate-500")}>
+                {stage.title}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+      <div className={clsx("mt-4 flex-1 rounded-2xl border p-4", tone.border, tone.soft)}>
+        <p className={clsx("text-xs font-semibold uppercase tracking-widest", tone.text)}>
+          Step {activeStage.id} of {journeyStages.length}
+        </p>
+        <p className="mt-1 text-base font-semibold text-slate-900">{activeStage.title}</p>
+        <p className="mt-2 text-sm text-slate-600">{activeStage.detail}</p>
+      </div>
+      <div className="mt-4 flex items-center justify-between">
+        <button
+          type="button"
+          onClick={() => goTo(-1)}
+          className="rounded-pill border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-600 transition duration-cozy ease-cozy hover:border-primary/60 hover:text-primary"
+        >
+          Previous
+        </button>
+        <button
+          type="button"
+          onClick={() => goTo(1)}
+          className="rounded-pill bg-primary px-4 py-2 text-xs font-semibold text-white transition duration-cozy ease-cozy hover:bg-primary/90"
+        >
+          Next step
+        </button>
+      </div>
+    </div>
+  );
+};
 
 const PLOT_FORM_PATH = "/groups/create";
 
@@ -703,23 +799,13 @@ const LandingPage = () => {
                   </div>
                 </div>
                 <div className="overflow-hidden rounded-card bg-white shadow-2xl">
-                  <div className="h-[22rem] w-full bg-black sm:h-[26rem] lg:h-[30rem]">
-                    <iframe
-                      className="h-full w-full"
-                      src="https://www.youtube.com/embed/nf4IHf9kbTg"
-                      title="TURANEZA App Demonstration step by step. EVERYTHING IS CLEAR, YOUR INVESTMENTS ARE SECURE."
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      referrerPolicy="strict-origin-when-cross-origin"
-                      allowFullScreen
-                    />
-                  </div>
+                  <JourneyExplorer />
                   <div className="bg-white px-5 py-4 sm:px-6">
                     <p className="text-base font-semibold text-slate-900">
-                      Explore the Turaneza App navigation journey 
+                      Explore the Turaneza App navigation journey
                     </p>
                     <p className="mt-2 text-sm text-slate-600">
-              
+                      Click through each stage, from sign-up to becoming a property owner, to see exactly how the platform works.
                     </p>
                   </div>
                 </div>
