@@ -40,14 +40,16 @@ const journeyToneStyles = {
 const journeyStages = [
   { id: 1, title: "Sign Up / Login", tone: "green", detail: "Create an account, verify email, and prepare for KYC onboarding." },
   { id: 2, title: "Become a Member", tone: "blue", detail: "Pay the commitment fee and move from Visitor to Member status." },
-  { id: 3, title: "Exploration & Education", tone: "amber", detail: "Study group rules, designs, legal standards, and investor responsibilities." },
-  { id: 4, title: "Create or Join a Group", tone: "violet", detail: "Launch a new investment group or join one that matches your goals." },
+  { id: 3, title: "Exploration & system experience", tone: "amber", detail: "Study group rules, designs, legal standards, and investor responsibilities." },
+  { id: 4, title: " Join a Group", tone: "violet", detail: "Launch a new investment group or join one that matches your goals." },
   { id: 5, title: "Sign Compliance", tone: "teal", detail: "Review legal agreements, confirm compliance, and accept platform standards." },
-  { id: 6, title: "Pay Construction", tone: "teal", detail: "Track staged contributions and unlock investor badge upgrades." },
-  { id: 7, title: "Pay Management Fee", tone: "amber", detail: "Settle the 5% management fee generated from the project building cost." },
+  { id: 6, title: "Pay commitment Fee", tone: "amber", detail: "Settle the 5% management fee generated from the project building cost." },
+  { id: 7, title: "contribute to projects", tone: "teal", detail: "Track staged contributions and unlock investor badge upgrades." },
+  
   { id: 8, title: "Become an Owner", tone: "blue", detail: "Receive unit or house ownership confirmation when all obligations are complete." },
   { id: 9, title: "Congratulations", tone: "green", detail: "Download final documents and enter the TURANEZA community as an owner." },
 ];
+
 
 // Interactive click-through replacement for the "navigation journey" demo
 // video — walks the same 9-stage journey shown on the auth page, but as a
