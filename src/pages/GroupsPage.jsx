@@ -55,8 +55,6 @@ const GroupCard = ({ group, membership, onJoin, canJoin, isOwner = false }) => {
     group?.created_by?.email ||
     "Urban Evolution Group";
   const leadEmail = group?.created_by?.email || "";
-  const groupCode =
-    group?.reference_code || String(group?.id || "").padStart(5, "0");
   const buildingCostLabel = formatUsdValue(group?.building_cost);
   const unitShareLabel = formatUsdValue(group?.member_unit_share);
   const membersCount = group?.members_count ?? 0;
@@ -85,7 +83,7 @@ const GroupCard = ({ group, membership, onJoin, canJoin, isOwner = false }) => {
               to={`/groups/${group.id}`}
               className="text-left text-base font-semibold text-slate-900 hover:text-primary"
             >
-              <span className="text-slate-500">#{groupCode}</span> {group.name}
+              {group.name}
             </Link>
             {isAdmin ? (
               <span className="rounded-pill bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
@@ -102,12 +100,14 @@ const GroupCard = ({ group, membership, onJoin, canJoin, isOwner = false }) => {
         </div>
       </div>
 
-      <div className="mt-5 flex flex-wrap items-center gap-4 text-xs text-slate-500">
+      <div className="mt-5 space-y-2 rounded-2xl bg-slate-50 px-4 py-3 text-xs text-slate-500">
         <div>
-          <p className="font-semibold text-slate-900">{capacityLabel}</p>
-          <p>Active investors</p>
+          <div className="flex items-center justify-between">
+            <span>Active investors</span>
+            <span className="font-semibold text-slate-900">{capacityLabel}</span>
+          </div>
           {capacityRatio !== null ? (
-            <div className="mt-2 h-1.5 w-28 rounded-full bg-slate-100">
+            <div className="mt-2 h-1.5 w-full rounded-full bg-slate-200">
               <div
                 className="h-full rounded-full bg-primary"
                 style={{ width: `${Math.min(capacityRatio * 100, 100)}%` }}
@@ -115,33 +115,31 @@ const GroupCard = ({ group, membership, onJoin, canJoin, isOwner = false }) => {
             </div>
           ) : null}
         </div>
-        <div>
-          <p className="font-semibold text-slate-900">
+        <div className="flex items-center justify-between border-t border-slate-200 pt-2">
+          <span>Status</span>
+          <span className="font-semibold text-slate-900">
             {group.status === "active" ? "Open" : "Restricted"}
-          </p>
-          <p>Status</p>
+          </span>
         </div>
-        <div>
-          <p className="font-semibold text-slate-900">{minInvestmentLabel}</p>
-          <p>Min investment</p>
+        <div className="flex items-center justify-between border-t border-slate-200 pt-2">
+          <span>Min investment</span>
+          <span className="font-semibold text-slate-900">{minInvestmentLabel}</span>
         </div>
-        <div>
-          <p className="font-semibold text-slate-900">{buildingCostLabel}</p>
-          <p>Building cost</p>
+        <div className="flex items-center justify-between border-t border-slate-200 pt-2">
+          <span>Building cost</span>
+          <span className="font-semibold text-slate-900">{buildingCostLabel}</span>
         </div>
-        <div>
-          <p className="font-semibold text-slate-900">
-            {group.total_units || "—"}
-          </p>
-          <p>Total units</p>
+        <div className="flex items-center justify-between border-t border-slate-200 pt-2">
+          <span>Total units</span>
+          <span className="font-semibold text-slate-900">{group.total_units || "—"}</span>
         </div>
-        <div>
-          <p className="font-semibold text-slate-900">{unitShareLabel}</p>
-          <p>Your unit share</p>
+        <div className="flex items-center justify-between border-t border-slate-200 pt-2">
+          <span>Your unit share</span>
+          <span className="font-semibold text-slate-900">{unitShareLabel}</span>
         </div>
-        <div>
-          <p className="font-semibold text-slate-900">{capitalRaisedLabel}</p>
-          <p>Capital raised</p>
+        <div className="flex items-center justify-between border-t border-slate-200 pt-2">
+          <span>Capital raised</span>
+          <span className="font-semibold text-slate-900">{capitalRaisedLabel}</span>
         </div>
       </div>
 
