@@ -42,10 +42,10 @@ const PROPERTY_TYPE_FILTERS = [
   { value: 'co_living', label: 'Co-living hubs' },
 ];
 
-// Filter options mirroring backend `listing_status` values.
+// Filter options mirroring backend `listing_status` values. "Fully occupied"
+// is deliberately left out — this page only ever shows available listings.
 const STATUS_FILTERS = [
   { value: 'all', label: 'All availability' },
-  { value: 'occupied', label: 'Fully occupied' },
   { value: 'for_rent', label: 'Available for rent' },
   { value: 'for_sale', label: 'Available for sale' },
   { value: 'mixed', label: 'Rent & sale' },
@@ -79,6 +79,13 @@ const normaliseList = (payload) => {
   }
   return [];
 };
+
+// This page is for finished houses currently available to buy or rent — not
+// projects still funding or under construction, and not units that are
+// already fully occupied (no longer available).
+const AVAILABLE_LISTING_STATUSES = new Set(['for_rent', 'for_sale', 'mixed']);
+const isAvailableFinishedProperty = (property) =>
+  property.status === 'completed' && AVAILABLE_LISTING_STATUSES.has(property.listing_status);
 
 // Reusable component that renders the rich card UI for a single property.
 const PropertyCard = ({ property, onViewDetails }) => {
@@ -251,7 +258,7 @@ const PropertiesPage = () => {
       setError(null);
       try {
         const response = await fetchPropertyListings(buildQuery(state));
-        setListings(normaliseList(response));
+        setListings(normaliseList(response).filter(isAvailableFinishedProperty));
         setLastUpdated(new Date());
       } catch (err) {
         setListings([]);
@@ -351,10 +358,10 @@ const PropertiesPage = () => {
         <div className="flex flex-wrap items-start justify-between gap-6">
           <div className="max-w-2xl">
             <p className="text-xs font-semibold uppercase tracking-[0.4em] text-primary">Property marketplace</p>
-            <h1 className="mt-3 text-3xl font-semibold text-slate-900">Every property Urban Evolution Group manages</h1>
+            <h1 className="mt-3 text-3xl font-semibold text-slate-900">Finished homes ready to buy or rent</h1>
             <p className="mt-3 text-sm text-slate-600">
-              From plots still raising capital to move-in ready buildings, explore every project Urban Evolution Group
-              manages on behalf of investor circles. Filter by city, pricing, or availability.
+              Move-in ready buildings Urban Evolution Group manages on behalf of investor circles, currently available
+              for sale or rent. Filter by city, pricing, or availability.
             </p>
           </div>
           <div className="grid gap-3 text-sm text-slate-600 sm:grid-cols-2">
@@ -377,7 +384,7 @@ const PropertiesPage = () => {
           </div>
         </div>
         <div className="mt-4 text-xs text-slate-400">
-          Updated {lastUpdated ? lastUpdated.toLocaleString() : 'today'} • All active projects
+          Updated {lastUpdated ? lastUpdated.toLocaleString() : 'today'} • Completed properties available now
         </div>
       </section>
 
