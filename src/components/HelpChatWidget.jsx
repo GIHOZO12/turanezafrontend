@@ -12,6 +12,15 @@ const ChatIcon = (props) => (
   </svg>
 );
 
+const WhatsAppIcon = (props) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+    <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91A9.86 9.86 0 0 0 12.04 2zm5.8 14.15c-.24.68-1.4 1.32-1.93 1.4-.5.08-1.13.11-1.82-.12-.42-.14-.96-.32-1.65-.62-2.9-1.25-4.79-4.17-4.94-4.36-.14-.2-1.18-1.57-1.18-3 0-1.42.75-2.12 1.02-2.41.26-.28.57-.35.76-.35h.55c.18 0 .41-.07.64.49.24.58.81 2.02.88 2.16.07.14.11.31.02.5-.09.19-.14.31-.28.48-.14.16-.29.36-.42.48-.14.13-.28.28-.12.55.16.28.71 1.17 1.53 1.89 1.05.94 1.94 1.23 2.21 1.37.28.14.44.12.6-.07.16-.19.68-.79.87-1.06.18-.28.36-.23.6-.14.24.09 1.55.73 1.82.87.27.14.44.2.51.31.07.11.07.65-.17 1.33z" />
+  </svg>
+);
+
+// Company WhatsApp line (also shown in the landing page's Contact section).
+const WHATSAPP_LINK = 'https://wa.me/250794199534';
+
 
 
 const HelpChatWidget = () => {
@@ -140,15 +149,28 @@ const HelpChatWidget = () => {
         </div>
       ) : null}
 
-      <button
-        type="button"
-        onClick={() => setOpen((prev) => !prev)}
-        className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-sm font-semibold text-white shadow-card transition hover:-translate-y-0.5 hover:bg-primary/90 sm:h-auto sm:w-auto sm:gap-2 sm:px-4 sm:py-3"
-        aria-label="Open help chat"
-      >
-        <ChatIcon className="h-5 w-5 sm:hidden" />
-        <span className="hidden sm:inline">Help</span>
-      </button>
+      <div className="flex flex-col items-end gap-3">
+        <a
+          href={WHATSAPP_LINK}
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Chat with us on WhatsApp"
+          className="flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] text-sm font-semibold text-white shadow-card transition hover:-translate-y-0.5 hover:brightness-95 sm:h-auto sm:w-auto sm:gap-2 sm:px-4 sm:py-3"
+        >
+          <WhatsAppIcon className="h-5 w-5 sm:hidden" />
+          <span className="hidden sm:inline">WhatsApp</span>
+        </a>
+
+        <button
+          type="button"
+          onClick={() => setOpen((prev) => !prev)}
+          className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-sm font-semibold text-white shadow-card transition hover:-translate-y-0.5 hover:bg-primary/90 sm:h-auto sm:w-auto sm:gap-2 sm:px-4 sm:py-3"
+          aria-label="Open help chat"
+        >
+          <ChatIcon className="h-5 w-5 sm:hidden" />
+          <span className="hidden sm:inline">Help</span>
+        </button>
+      </div>
     </div>
   );
 };
