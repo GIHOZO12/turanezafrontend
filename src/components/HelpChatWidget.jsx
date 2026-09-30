@@ -19,7 +19,10 @@ const WhatsAppIcon = (props) => (
 );
 
 // Company WhatsApp line (also shown in the landing page's Contact section).
-const WHATSAPP_LINK = 'https://wa.me/250794199534';
+// Pre-filled with a greeting so staff immediately know the chat came from
+// the app/website rather than an organic WhatsApp contact.
+const WHATSAPP_PREFILL = "Hello, I'm messaging from the Turaneza App (turanezapp.rw).";
+const WHATSAPP_LINK = `https://wa.me/250794199534?text=${encodeURIComponent(WHATSAPP_PREFILL)}`;
 
 
 
