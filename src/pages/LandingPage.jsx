@@ -1232,7 +1232,7 @@ const LandingPage = () => {
                   <div className="rounded-card bg-porcelain p-5">
                     <p className="font-semibold text-slate-700">Support</p>
                     <p className="mt-2 font-serif">
-                  0785250953 | info@turaneza.rw
+                  +250 794 199 534 | turanezapp@gmail.com
                     </p>
                   </div>
                   <div className="rounded-card bg-porcelain p-5">
