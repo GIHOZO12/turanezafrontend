@@ -1238,7 +1238,7 @@ const LandingPage = () => {
                   <div className="rounded-card bg-porcelain p-5">
                     <p className="font-semibold text-slate-700">Hours</p>
                     <p className="mt-2 font-serif">
-                      Monday - Friday | 8:00 AM to 5:00 PM CAT
+                      Monday - sunday |  24/7
                     </p>
                   </div>
                 </div>
