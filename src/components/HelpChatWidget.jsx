@@ -88,6 +88,8 @@ const HelpChatWidget = () => {
 
   return (
     <div className="fixed bottom-3 right-3 z-50 sm:bottom-4 sm:right-4">
+      {/* AI assistant temporarily disabled — commented out, not deleted, so
+      it's a one-line uncomment to bring back.
       {open ? (
         <div className="mb-3 flex max-h-[min(32rem,calc(100vh-6rem))] w-[calc(100vw-1.5rem)] max-w-80 flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl">
           <div className="flex flex-shrink-0 items-center justify-between rounded-t-3xl bg-primary px-4 py-3 text-white">
@@ -110,19 +112,7 @@ const HelpChatWidget = () => {
           </div>
           <div className="flex-shrink-0 border-t border-slate-100 px-4 py-3">
             {messages.length <= 1 ? (
-              <div className="mb-2 flex flex-wrap gap-2">
-                {/* {suggestions.map((question) => (
-                  <button
-                    key={question}
-                    type="button"
-                    onClick={() => handleSend(question)}
-                    disabled={sending}
-                    className="rounded-pill border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-700 transition hover:border-primary/50 hover:text-primary disabled:opacity-50"
-                  >
-                    {question}
-                  </button>
-                ))} */}
-              </div>
+              <div className="mb-2 flex flex-wrap gap-2" />
             ) : null}
             <div className="flex items-center gap-2">
               <input
@@ -151,6 +141,7 @@ const HelpChatWidget = () => {
           </div>
         </div>
       ) : null}
+      */}
 
       <div className="flex flex-col items-end gap-3">
         <a
@@ -164,6 +155,7 @@ const HelpChatWidget = () => {
           <span className="hidden sm:inline">WhatsApp</span>
         </a>
 
+        {/* AI assistant toggle button — commented out alongside the panel above.
         <button
           type="button"
           onClick={() => setOpen((prev) => !prev)}
@@ -173,6 +165,7 @@ const HelpChatWidget = () => {
           <ChatIcon className="h-5 w-5 sm:hidden" />
           <span className="hidden sm:inline">Help</span>
         </button>
+        */}
       </div>
     </div>
   );
