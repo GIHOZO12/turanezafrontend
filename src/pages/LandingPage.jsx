@@ -1155,7 +1155,7 @@ const LandingPage = () => {
                 {[0, 1, 2].map((placeholder) => (
                   <div
                     key={placeholder}
-                    className="h-56 w-80 min-w-[20rem] flex-shrink-0 animate-pulse rounded-card bg-porcelain sm:w-96"
+                    className="h-56 w-[80vw] max-w-sm flex-shrink-0 animate-pulse rounded-card bg-porcelain sm:w-96 sm:max-w-none"
                   />
                 ))}
               </div>
@@ -1165,7 +1165,7 @@ const LandingPage = () => {
                   {testimonials.map((testimonial) => (
                     <blockquote
                       key={testimonial.id}
-                      className="group relative flex w-80 min-w-[20rem] flex-col gap-6 rounded-card bg-white p-8 shadow-card transition duration-cozy ease-cozy hover:-translate-y-1 hover:shadow-2xl sm:w-96"
+                      className="group relative flex w-[80vw] max-w-sm flex-shrink-0 flex-col gap-5 rounded-card bg-white p-5 shadow-card transition duration-cozy ease-cozy hover:-translate-y-1 hover:shadow-2xl sm:w-96 sm:max-w-none sm:gap-6 sm:p-8"
                     >
                       <div className="flex items-center gap-4">
                         {testimonial.image ? (
@@ -1467,16 +1467,19 @@ const LandingPage = () => {
                 Receive quarterly impact reports and early access to new
                 developments.
               </p>
-              <form className="mt-6 flex gap-3">
+              {/* min-w-0 on the input matters: flex items default to
+              min-width:auto, so without it the input refuses to shrink below
+              its intrinsic width and pushes the button out of the container. */}
+              <form className="mt-6 flex gap-2 sm:gap-3">
                 <input
                   type="email"
                   placeholder="Email address"
-                  className="flex-1 rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-sm text-white placeholder:text-white/60 outline-none transition duration-cozy ease-cozy focus:border-sunshine focus:bg-white/20"
+                  className="min-w-0 flex-1 rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-xs text-white placeholder:text-white/60 outline-none transition duration-cozy ease-cozy focus:border-sunshine focus:bg-white/20 sm:px-4 sm:py-3 sm:text-sm"
                   required
                 />
                 <button
                   type="submit"
-                  className="rounded-pill bg-sunshine px-4 py-3 text-sm font-semibold text-slate-900 transition duration-cozy ease-cozy hover:-translate-y-0.5 hover:bg-sunshine/90"
+                  className="flex-shrink-0 whitespace-nowrap rounded-pill bg-sunshine px-3 py-2 text-xs font-semibold text-slate-900 transition duration-cozy ease-cozy hover:-translate-y-0.5 hover:bg-sunshine/90 sm:px-4 sm:py-3 sm:text-sm"
                 >
                   Join
                 </button>
