@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import logo from "../assets/logo.png";
 import {
   submitLandingContactForm,
   submitLandingInvestmentInterest,
@@ -350,11 +351,10 @@ const LandingPage = () => {
         <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-lg shadow-sm">
           <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-5 sm:px-6 lg:px-8">
             <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-white shadow-card transition duration-cozy ease-cozy hover:scale-105">
-                <span className="text-xl font-semibold">UEG</span>
+              <div className="flex h-12 w-12 items-center justify-center rounded-2x text-white shadow-card transition duration-cozy ease-cozy hover:scale-105">
+<img src={logo} alt="Urban Evolution Group logo" className="h-full w-full rounded-full" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-slate-900">Urban Evolution Group</p>
                 <p className="text-sm text-slate-500">Turaneza App</p>
               </div>
             </div>
@@ -1387,7 +1387,7 @@ const LandingPage = () => {
             <div>
               <div className="flex items-center gap-3">
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-white shadow-card">
-                  <span className="text-xl font-semibold">UEG</span>
+<image src={logo} alt="Urban Evolution Group logo" className="h-6 w-6" />
                 </div>
                 <div>
                   <p className="text-lg font-semibold text-white">
