@@ -720,7 +720,7 @@ const LandingPage = () => {
           >
             <div className="grid gap-10 lg:grid-cols-[2fr,3fr] lg:items-center">
               <div>
-                <span className="inline-flex items-center gap-2 rounded-pill bg-mint/20 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-mint">
+                <span className="inline-flex items-center gap-2 rounded-pill bg-mint/20 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-blue-400">
                   About Urban Evolution Group
                 </span>
                 <h2 className="mt-5 text-3xl font-semibold text-slate-900 sm:text-4xl">
@@ -825,7 +825,7 @@ const LandingPage = () => {
                         <div className="absolute inset-0 bg-gradient-to-tr from-slate-900/60 via-slate-900/20 to-transparent transition duration-cozy ease-cozy group-hover:opacity-80" />
                       </div>
                       <div className="flex flex-1 flex-col gap-4 p-6">
-                        <span className="inline-flex w-fit items-center gap-2 rounded-pill bg-mint/20 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-mint">
+                        <span className="inline-flex w-fit items-center gap-2 rounded-pill bg-mint/20 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-blue-500">
                           {project.group_name ? `${project.group_name} group` : project.status || "In progress"}
                         </span>
                         <h3 className="text-xl font-semibold text-slate-900">
@@ -878,7 +878,7 @@ const LandingPage = () => {
             />
             <div className="relative mx-auto grid max-w-6xl gap-12 px-4 sm:px-6 lg:grid-cols-[1.1fr,0.9fr] lg:px-8">
               <div>
-                <span className="inline-flex items-center gap-2 rounded-pill bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-mint">
+                <span className="inline-flex items-center gap-2 rounded-pill bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white">
                   Invest with Confidence
                 </span>
                 <h2 className="mt-6 text-3xl font-semibold sm:text-4xl">
@@ -1137,7 +1137,7 @@ const LandingPage = () => {
           >
             <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <span className="inline-flex items-center gap-2 rounded-pill bg-mint/20 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-mint">
+                <span className="inline-flex items-center gap-2 rounded-pill bg-mint/20 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-blue-400">
                   Testimonials
                 </span>
                 <h2 className="mt-4 text-3xl font-semibold text-slate-900 sm:text-4xl">
