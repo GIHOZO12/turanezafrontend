@@ -44,10 +44,10 @@ const qaItems = [
 
 const quizQuestions = [
   {
-    question: "What is the main purpose of the TURANEZA App platform?",
+    question: "What is the main purpose of the TURANEZA App?",
     options: [
       "To sell single-family houses directly to buyers",
-      "To help people invest together in multi-family housing projects and strengthen community infrastructure",
+      "To help people invest together in multi-family housing & community housing projects and improve community infrastructure",
       "To provide short-term loans to individuals",
       "To manage only rental payments for existing apartments",
     ],
@@ -56,54 +56,55 @@ const quizQuestions = [
   {
     question: "Who can create a new investment group on the platform?",
     options: [
-      "Any registered user can create a group, especially land/plot owners",
-      "Only the Super Admin",
-      "Only investors who are already Platinum",
+      "Any registered user, especially a landowner",
+      "Only the Super Admin, based on an approved plot and with the landowner's agreement",
+      "Only investors who have reached the Platinum tier",
       "Only external construction companies",
-    ],
-    correctIndex: 0,
-  },
-  {
-    question:
-      "Which role is primarily responsible for attracting and onboarding members into a group?",
-    options: ["Group Admin", "Super Admin", "External Auditor", "Guest User"],
-    correctIndex: 0,
-  },
-  {
-    question: "What is the best description of the Super Admin's job?",
-    options: [
-      "Manage one group only",
-      "Approve and suspend members and investors, oversee all groups, and control platform-wide activities",
-      "Design house plans only",
-      "Collect payments directly from members in cash",
     ],
     correctIndex: 1,
   },
   {
-    question:
-      "Why is proof of payment (e.g., bank deposit slip) uploaded by an investor?",
+    question: "Who is mainly responsible for attracting and onboarding group members?",
+    options: [
+      "Group Admin",
+      "Super Admin",
+      "External Auditor",
+      "Guest User",
+    ],
+    correctIndex: 1,
+  },
+  {
+    question: "What is the main role of the Super Admin?",
+    options: [
+      "To manage only one group",
+      "To approve plots, onboarding members or investors, oversee all groups, and manage activities across the platform",
+      "To design house plans only",
+      "To collect cash payments directly from members",
+    ],
+    correctIndex: 1,
+  },
+  {
+    question: "Why must an investor submit proof of payment, such as a bank deposit slip?",
     options: [
       "To unlock a public profile picture",
-      "To let the Super Admin verify the transfer and approve the investor’s status/tier",
+      "To allow the Super Admin to verify the payment and approve the investor's status or tier",
       "To allow members to change their passwords",
       "To generate a random discount code",
     ],
     correctIndex: 1,
   },
   {
-    question:
-      "Which statement best matches how investor tiers work on the platform?",
+    question: "How do investors move to a higher tier on the platform?",
     options: [
-      "Tiers are assigned automatically by an Automated system without review",
-      "Tiers are promoted only after payment proof is reviewed and verified by Super-Admin",
-      "Tiers change daily based on app usage time",
-      "Tiers are chosen by the investor without any requirements",
+      "An automated system assigns tiers without any review",
+      "Investors move to a higher tier only after the Super Admin reviews and verifies their proof of payment",
+      "Tiers change daily based on how much time investors spend using the app",
+      "Investors choose their own tiers without meeting any requirements",
     ],
     correctIndex: 1,
   },
   {
-    question:
-      "Which tier order matches the typical progression mentioned for investors?",
+    question: "What is the correct order of investor tiers, from lowest to highest?",
     options: [
       "Platinum → Diamond → Golden → Silver → Aspiring",
       "Aspiring → Silver → Golden → Diamond → Platinum",
@@ -113,349 +114,329 @@ const quizQuestions = [
     correctIndex: 1,
   },
   {
-    question: "What is the primary condition for joining a group?",
+    question: "What are the main requirements for joining a group?",
     options: [
-      "Having a lot of money on your bank account",
-      "Have a clear ambition or interest in the group’s purpose and agree to the group rules and terms, then pay 100$ as commitment fee.",
-      "Being known by Super-admin",
-      "Being a friend with group admin",
+      "Having a lot of money in your bank account",
+      "Having a clear interest in the group's purpose, accepting its rules and terms, and paying the RWF 100,000 commitment fee which is refundable.",
+      "Being personally known by the Super Admin",
+      "Being a friend of the Group Admin",
     ],
     correctIndex: 1,
   },
   {
-    question:
-      "Which practice is most important for successful group-based investment that leads to house ownership?",
+    question: "Which practice is most important for successful group investment that leads to home ownership?",
     options: [
-      "Only Chatting frequently about group activities and get dialy updates",
-      "Being ready to invest, communicate clearly and honeslty with group members, and following the group’s contribution plan and rules",
-      "Having a money on your bank account and ready to invest",
-      "Being sure that group members are your friends and you can trust them without any proof or agreement",
+      "Only chatting frequently about group activities and receiving daily updates",
+      "Being ready to invest, communicating clearly and honestly with group members, and following the group's contribution plan and rules",
+      "Having money in your bank account and being ready to invest",
+      "Making sure all group members are your friends and trusting them without any proof or agreement",
     ],
     correctIndex: 1,
   },
   {
-    question:
-      "In group-based investment, why is it important to be honest and transparent?",
+    question: "Why are honesty and transparency important in group investment?",
     options: [
-      "Groups are based on trust and shared goals; dishonesty can lead to conflicts, loss of trust, and jeopardize the entire investment",
-      "Group members are now co-investors, in the future they will be your neighbors, and they will be the ones you will live with, so honesty is not important only for the success of the investment but also for building a good community",
-      "If you are dishonest, it can lead you to get severe penalities according to the platform rules and conditions",
-      "All the above answers are correct",
-    ],
-    correctIndex: 3,
-  },
-  {
-    question: "Which action should a Group Admin typically be able to do?",
-    options: [
-      "Promote an investor to Platinum after bank verification",
-      "Create a group, invite members, and manage group-level updates",
-      "Change platform-wide rules for all groups",
-      "Approve or suspend any user across the entire platform",
-    ],
-    correctIndex: 1,
-  },
-  {
-    question: "Which action should be restricted to the Super Admin?",
-    options: [
-      "View all groups on the platform",
-      "Verify payment proofs and approve tier promotions",
-      "Approve or suspend users platform-wide",
+      "Groups depend on trust and shared goals. Dishonesty can cause conflicts, damage trust, and put the entire investment at risk",
+      "Group members are co-investors who may later become neighbors. Honesty supports both a successful investment and a strong community",
+      "Dishonesty can lead to serious penalties under the platform's rules and terms",
       "All of the above",
     ],
     correctIndex: 3,
   },
   {
-    question: "What is the best first step when creating a new group?",
+    question: "What should the investors' committee be responsible for?",
     options: [
-      "Upload a payment proof immediately",
-      "Define the group name, purpose, and basic rules (e.g., contribution expectations)",
-      "Delete your user account",
-      "Skip the group description to save time",
+      "Promoting accountability and transparency in the use of funds, in line with the company's rules and regulations",
+      "Creating a group, inviting members, and managing group updates",
+      "Changing platform-wide rules for all groups",
+      "Approving or suspending any user across the platform",
     ],
-    correctIndex: 1,
+    correctIndex: 0,
   },
   {
-    question: "Which items help members trust the group?",
+    question: "Which actions should be reserved for the Super Admin?",
     options: [
-      "Group mission, a defined location of a plot/land, contribution plan, common understanding",
+      "Viewing all groups on the platform",
+      "Verifying payment proofs and approving tier promotions",
+      "Approving or suspending users across the platform",
+      "All of the above",
+    ],
+    correctIndex: 3,
+  },
+  {
+    question: "What is the correct starting process for creating an investment group?",
+    options: [
+      "Uploading proof of payment immediately",
+      "Defining the group's name, purpose, and basic rules, such as contribution requirements",
+      "The Super Admin lists registered and approved plots, then creates and lists the groups so housing investors can join under the applicable rules and regulations",
+      "Skipping the group description to save time",
+    ],
+    correctIndex: 2,
+  },
+  {
+    question: "What information helps members trust a group?",
+    options: [
+      "A clear group mission, the plot's location, a contribution plan, and a shared understanding among group members",
       "Only a group nickname",
-      "No description at all",
+      "No group description",
       "Only memes and stickers",
     ],
     correctIndex: 0,
   },
   {
-    question:
-      "What is the main benefit of investing in a group rather than alone (according to the platform idea)?",
+    question: "What is the main benefit of investing as a group instead of investing alone?",
     options: [
       "Groups remove the need for budgeting",
-      "Pooling resources can make large projects like multi-family houses achievable and promote space conservation",
-      "Groups always guarantee profit",
-      "Groups eliminate legal paperwork completely",
+      "Pooling resources can make multi-family housing and community housing projects achievable while using land more efficiently",
+      "Groups always guarantee a profit",
+      "Groups completely remove the need for legal paperwork",
     ],
     correctIndex: 1,
   },
   {
-    question:
-      "A member wants to join a group. What should they consider when choosing a group?",
+    question: "What should a member consider when choosing a group?",
     options: [
-      "They should consider more friends than their investment purpose",
-      "They should assure themselves that the group aligns well their investment plan",
-      "They should consider to be group admin",
-      "They should consider rent profits from their unit apartment in the future",
+      "Whether their friends are in the group, more than the purpose of their investment",
+      "Whether they can become the Group Admin",
+      "The rental income they could earn from their apartment in the future",
+      "Whether the group matches their investment plan",
     ],
-    correctIndex: 1,
+    correctIndex: 3,
   },
   {
-    question: 'What does "onboarding" for a new member usually include?',
+    question: 'What does "onboarding" usually include for a new member?',
     options: [
-      "Learning group rules, how contributions work, and where to see updates and records",
+      "Learning the group rules, understanding how contributions work, and knowing where to find updates and records",
       "Learning how to hack the platform",
       "Refusing to read any terms",
-      "Only changing the app theme color",
+      "Only changing the app's theme color",
     ],
     correctIndex: 0,
   },
   {
-    question:
-      "Why should the platform keep a clear record of contributions and approvals?",
+    question: "Why should the platform keep clear records of contributions and approvals?",
     options: [
       "To confuse members",
-      "To improve transparency, resolve disputes, and support reporting",
       "To hide financial information from everyone",
+      "To improve transparency, help resolve disputes, and support reporting",
       "To reduce security",
     ],
-    correctIndex: 1,
+    correctIndex: 2,
   },
   {
-    question: "What is the best way to understand how the platform works well?",
+    question: "What are the best ways to understand how the platform works?",
     options: [
-      "Get information from group admin",
-      "Consult Urban Evolution Group's agents accross the country, attend meetings to the office and follow on its social media.",
-      "Watch the walkthrough videos, read and understand well the documentation of the platform on help page",
-      "all the above response are correct",
+      "Asking the Group Admin for information",
+      "Visiting Urban Evolution Group's office, attending meetings there, and following its social media pages",
+      "Watching walkthrough videos and reading the platform documentation on the Help page",
+      "All of the above",
     ],
     correctIndex: 3,
   },
   {
-    question:
-      "If a payment proof is unclear or suspicious, what is the best next step?",
+    question: "What should happen if proof of payment is unclear or suspicious?",
     options: [
       "Approve it anyway to avoid delays",
-      "Request clarification or re-upload, then verify with officials/bank confirmation as required",
-      "Delete the investor’s account immediately without explanation",
-      "Post it publicly to ask others",
+      "Ask for clarification or a new upload, then verify the payment with the relevant officials or bank if needed",
+      "Immediately delete the investor's account without an explanation",
+      "Post the proof publicly to ask others for help",
     ],
     correctIndex: 1,
   },
   {
-    question:
-      'Which platform feature best supports "transparency" for group members?',
+    question: "Which platform feature best supports transparency for group members?",
     options: [
-      "A dashboard showing group progress, contributions, and approved milestones",
-      "A hidden page that only the group admin can see",
+      "A dashboard showing project progress, contributions, and approved milestones",
+      "A hidden page that only the Group Admin can view",
       "A random number generator",
-      "A page that changes numbers without records",
+      "A page that changes figures without keeping records",
     ],
     correctIndex: 0,
   },
   {
-    question: 'What does it mean if an investor status is "Aspiring"?',
+    question: 'What does the "Aspiring" investor status mean?',
     options: [
-      "The investor has completed all payments and is verified",
-      "The investor is interested, registered, has paid commitment fee but not yet paid the first installment to get promoted to the following higher tier",
-      "The investor is a group Admin",
+      "The investor has completed all payments and has been verified",
+      "The investor is a Group Admin",
+      "The investor has registered and paid the commitment fee but has not yet paid the first installment required to move to the next tier",
       "The investor can approve other investors",
     ],
-    correctIndex: 1,
+    correctIndex: 2,
   },
   {
-    question:
-      'Which is a good reason to separate "Group Admin" and "other investor" permissions?',
+    question: "Why should housing investors form a committee?",
     options: [
-      "So group admins can have power of suspending other investors",
-      "To make happy other investors",
-      "So groups can have clear organization, accountability, and follow rules that lead to success of projects",
-      "To make happy a group admin",
+      "To give Group Admins the power to suspend other investors",
+      "To make other investors happy",
+      "To help the group stay organized, promote transparency and accountability, and follow the rules needed for a successful housing project",
+      "To make the Group Admin happy",
     ],
     correctIndex: 2,
   },
   {
-    question:
-      "A group admin wants to remove a disruptive member from their group. What is the best policy approach?",
+    question: "Are investors allowed to leave a group?",
     options: [
-      "Remove them instantly with no record",
-      "Follow a documented process: warning, reason logged, and (if needed) escalation to Super Admin",
-      "Ignore the issue forever",
-      "Share the member’s private data publicly",
+      "Yes. Investors have the right to leave, but the commitment fee may no longer be refundable at certain project stages. Investors should join only when they are serious and ready to stay committed to the project and the group",
+      "No. Investors must remain committed and stay in the group",
+    ],
+    correctIndex: 0,
+  },
+  {
+    question: "What should happen when the Super Admin suspends a user across the platform?",
+    options: [
+      "The user should still be able to approve payments",
+      "The user's access should be blocked or limited according to the suspension policy",
+      "The user's account should automatically post advertisements",
+      "The user should receive more permissions",
     ],
     correctIndex: 1,
   },
   {
-    question:
-      "What should happen when a user is suspended platform-wide by the Super Admin?",
+    question: "What is the best approach to communication on the platform?",
     options: [
-      "They should still be able to approve payments",
-      "They should lose access according to the suspension policy (e.g., login blocked or limited access)",
-      "Their account should automatically post advertisements",
-      "They should gain more permissions",
-    ],
-    correctIndex: 1,
-  },
-  {
-    question: "Which statement about communication on the platform is best?",
-    options: [
-      "Members should rely to every comments among fellow investors",
+      "Members should rely on every comment made by fellow investors",
       "Updates should be deleted after 24 hours",
-      "Admins should communicate verbally calling one on one investor",
-      "Groups should have and follow daily, weekly updates on their official update pages (announcements their respective group detail page, chat, or notifications)",
+      "Admins should communicate only by calling each investor individually",
+      "Groups should share and follow daily or weekly updates through official channels, such as announcements on the group details page, group chats, or notifications",
     ],
     correctIndex: 3,
   },
   {
-    question:
-      "Why should the platform include an audit log for important actions (approvals, promotions, suspensions)?",
+    question: "Why should the platform keep an audit log of important actions, such as approvals, tier promotions, and suspensions?",
     options: [
-      "To proove that the platform is working and to have fun with numbers",
-      "To provide accountability and let investors trace changes for their actions and decisions",
-      "To allow anonymous actions without tracking",
-      "To prevent Super Admin from doing a lot of job",
+      "To prove that the platform works and to have fun with numbers",
+      "To support accountability and allow investors to trace changes, actions, and decisions",
+      "To allow anonymous actions without tracking them",
+      "To reduce the Super Admin's workload",
     ],
     correctIndex: 1,
   },
   {
-    question: "Which is a reasonable mission of Urban Evolution Group?",
+    question: "Which statements describe Urban Evolution Group's mission?",
     options: [
       "To make a profit",
-      "Assist the governement to NST2 Goal 11: Urbanization and Settlements to create sustainable, inclusive, and resilient cities and communities.",
-      "To help people invest together in multi-family housing projects and strengthen community infrastructure",
-      "Answer 2 and 3 are correct",
+      "To support the government's NST2 Goal 11 on Urbanization and Settlements by helping create sustainable, inclusive, and resilient cities and communities",
+      "To help people invest together in multi-family housing projects and improve community infrastructure",
+      "Both the second and third answers",
     ],
     correctIndex: 3,
   },
   {
-    question:
-      "Will group members be able to see each other's contributions and payment proofs?",
+    question: "Can group members see each other's contributions and payment proofs?",
     options: [
       "Yes, to promote transparency and trust within the group",
-      "No, all contributions and payments proofs are private and only visible to Group Admin, this one will report to their fellow investors who already paid. Then, Super admin will control all activities.",
-      "All answers are correct according to the internal agreement of investors in the group, with awareness with the super admin, all to promote transparency and trust within the group.",
+      "No. Contributions and payment proofs are private and visible only to the Group Admin, who reports payment updates to fellow investors. The Super Admin oversees all activities",
+      "Either arrangement can apply, depending on the group's internal agreement and with the Super Admin's knowledge, to promote transparency and trust",
     ],
     correctIndex: 2,
   },
   {
-    question:
-      'What is the best definition of "milestone" in an investment project flow?',
+    question: 'What is a "milestone" in an investment project?',
     options: [
-      "A random decision of group members",
+      "A random decision made by group members",
       "A password reset",
-      "A planned stage (e.g., land acquisition, design approval, construction phase) that can be tracked and approved",
-      "A type of investment tier",
+      "A planned project stage, such as land acquisition, design approval, or a construction phase, that can be tracked and approved",
+      "A type of investor tier",
     ],
     correctIndex: 2,
   },
   {
-    question: "Which approach best reduces disputes about money in a group?",
+    question: "Which approach best reduces disputes about money within a group?",
     options: [
-      "No records, only trust",
-      "Clear rules + transparent contribution tracking + approvals + receipts/proof storage",
-      "Let each member keep their own separate secret records",
-      "Change rules every week without notice",
+      "Relying only on trust without keeping records",
+      "Having clear rules, transparent contribution records, documented approvals, stored payment proofs, and collaboration between Urban Evolution Group Ltd and the investors' committee",
+      "Allowing each member to keep separate, secret records",
+      "Changing the rules every week without notice",
     ],
     correctIndex: 1,
   },
   {
-    question:
-      "When members join a group, why should they accept group rules/terms?",
+    question: "Why must members accept the group's rules and terms when joining?",
     options: [
-      "So admins can change rules secretly later",
-      "To make sure shared expectations and responsibilities are clear, which promotes trust and group cohesion",
+      "To allow admins to change the rules secretly later",
+      "To make shared expectations and responsibilities clear, build trust, and help members work together",
       "To remove the need for communication",
-      "To make Urban Evolution Group’s job easier without caring about members",
+      "To make Urban Evolution Group's work easier without considering members' interests",
     ],
     correctIndex: 1,
   },
   {
-    question: "Which is the safest way to handle login for admins and members?",
+    question: "What is the safest way for members and investors to protect their login details?",
     options: [
-      "Use strong passwords, verifying emails/phones, and never share credentials",
-      "Store passwords in a spreadsheet shared publicly",
+      "Use strong passwords, verify their email addresses or phone numbers, and never share their login details",
+      "Store passwords in a publicly shared spreadsheet",
       "Use the same password for every user",
       "Never log out",
     ],
     correctIndex: 0,
   },
   {
-    question:
-      "If a group admin forgets their password, what should the platform provide?",
+    question: "What should the platform provide if a Group Admin forgets their password?",
     options: [
-      "A secure password reset flow (email/phone verification) without exposing passwords",
-      "Send the old password back in plain text",
-      "Tell them to create a new account and lose all data",
-      "Ignore them",
+      "A secure password reset process using email or phone verification, without exposing the password",
+      "The old password sent back as plain text",
+      "Instructions to create a new account and lose all previous data",
+      "No assistance",
     ],
     correctIndex: 0,
   },
   {
     question: "Who will construct the houses in the investment projects?",
     options: [
-      "Urban Evolution Group Engineers",
-      "Group membership, contribution history, project milestones, and announcements relevant to them",
-      "Well established external construction companies hired by Urban Evolution Group in partnership with respective group members (investors). Urban Evolution Group Engineers will do all supervision and follow up to make sure that the construction process is going well according to the plan and schedule then report to investors.",
-      "Other members’ sensitive bank details",
+      "Urban Evolution Group's engineers",
+      "Group membership details, contribution history, project milestones, and relevant announcements",
+      "Established external construction companies hired by Urban Evolution Group in collaboration with the group's investors. Urban Evolution Group's engineers will supervise the work, check progress against the plans and schedule, and report to investors",
+      "Other members' sensitive bank details",
     ],
     correctIndex: 2,
   },
   {
-    question: "Which is an appropriate reason to promote an investor's tier?",
+    question: "What is the full requirement for moving an investor to the next tier?",
     options: [
-      "They sent many messages in chat",
-      "They uploaded valid payment proof and the transfer was verified",
-      "They changed their profile photo",
-      "They have paid the amount of money that matches the percentage of their total contribution. Then submit the proof of payment to their group admin and super admin to get promoted to the following tier",
+      "The investor has sent many messages in the group chat",
+      "The investor has uploaded valid proof of payment, and the transfer has been verified",
+      "The investor has changed their profile photo",
+      "The investor has paid the required percentage of their total contribution and submitted proof of payment to the Group Admin and Super Admin for approval",
     ],
     correctIndex: 3,
   },
   {
-    question:
-      'What is a key difference between "group-level approval" and "platform-level approval"?',
+    question: 'What does "platform approval" mean?',
     options: [
-      "Group approval is done by members; platform approval is done by Super Admin for sensitive actions",
-      "Platform approval is done by guests",
-      "Group approval requires no login",
-      "There is no difference",
+      "The Super Admin approves sensitive actions on the platform",
+      "Guests approve actions on the platform",
+      "Approval does not require anyone to log in",
+      "There is no difference between approved and unapproved actions",
     ],
     correctIndex: 0,
   },
   {
-    question:
-      "Why must Urban Evolution Group and TURANEZA App work with government officials, and why is that important?",
+    question: "Why is it important for Urban Evolution Group and the TURANEZA App to work with government officials?",
     options: [
-      "To assist the governement to NST2 Goal 11: Urbanization and Settlements to create sustainable, inclusive, and resilient cities and communities.",
-      "To facilitate the well use of general master plan of cities and to make sure that the projects are legal and follow the regulations",
-      "To make trust from investors that we are working in a legal way to serve them.",
-      "All the above answers are correct",
+      "To support the government's NST2 Goal 11 on Urbanization and Settlements by helping create sustainable, inclusive, and resilient cities and communities",
+      "To follow city master plans and ensure that projects meet legal and regulatory requirements",
+      "To build investors' trust by showing that the projects operate legally",
+      "All of the above",
     ],
     correctIndex: 3,
   },
   {
-    question: "Who draws the house plans for the investment projects?",
+    question: "Who prepares the house plans for the investment projects?",
     options: [
-      "Urban Evolution Group Architects and Engineers in collaboration with investors, according to the local regulations and standards. They must consider also land characteristics.",
-      "Using a structured AI suggestion system for generating plans",
+      "Urban Evolution Group's architects and engineers, working with investors and considering local regulations, building standards, and the characteristics of the land",
+      "An AI system that generates suggested plans",
       "External architects hired by investors without any supervision",
-      "Allowing any investor to hire any architect from their choice without any guidance or standards",
+      "Any architect chosen by an investor, without guidance or required standards",
     ],
     correctIndex: 0,
   },
   {
-    question:
-      "Are there training and education sessions for investors to understand how the platform works and how to use it in the best way?",
+    question: "Are training sessions and learning materials available to help investors understand and use the platform?",
     options: [
-      "yes, by providing agents in specific areas around the country to do in-person training and onboarding.",
-      "yes, by providing online training materials, videos, and documentation on the platform",
-      "Yes, at Urban Evolution Group Office, one day in a week, every week, there are a training session for investors to understand well how the platform works and how to use it in the best way",
-      "All the above answers are correct",
+      "Yes. Agents in selected areas across the country provide in-person training and onboarding",
+      "Yes. Online training materials, videos, and documentation are available on the platform",
+      "Yes. Urban Evolution Group holds a training session at its office one day each week to help investors understand and use the platform",
+      "All of the above",
     ],
     correctIndex: 3,
   },
@@ -693,13 +674,7 @@ const HelpPage = () => {
             >
               Login
             </Link>
-            <button
-              type="button"
-              onClick={handleDashboardClick}
-              className="rounded-pill bg-primary px-5 py-2 text-sm font-semibold text-white shadow-card transition duration-cozy ease-cozy hover:-translate-y-0.5 hover:bg-primary/90"
-            >
-              Go to dashboard
-            </button>
+          
           </div>
           <button
             type="button"
@@ -748,16 +723,7 @@ const HelpPage = () => {
             >
               Login
             </Link>
-            <button
-              type="button"
-              onClick={() => {
-                setIsMobileNavOpen(false);
-                handleDashboardClick();
-              }}
-              className="rounded-lg bg-primary px-4 py-3 text-sm font-semibold text-white shadow-card"
-            >
-              Go to dashboard
-            </button>
+            
           </nav>
         </div>
       </header>
