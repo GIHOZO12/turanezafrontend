@@ -17,28 +17,28 @@ const topicLinks = [
 
 const qaItems = [
   {
-    q: "Who can join Urban Evolution Group through the TURANEZA App?",
-    a: "Anyone who creates an account, verifies their email, and is ready to follow the platform rules can join. People with a clear investment purpose, including plot or land owners, can also create or lead a group.",
+    q: "Who can join a housing project through the TURANEZA App?",
+    a: "Landowners, individuals, families, and investors can participate. Whether you want to contribute land, own a home near your daily activities, or invest in housing, you must meet the project's requirements and agree to the platform rules and group agreements.",
   },
   {
-    q: "What is the $100 engagement or commitment fee?",
-    a: "It is a commitment deposit that shows the investor is serious about joining the process. It helps activate investor participation, supports onboarding discipline, and is treated as a controlled platform requirement rather than a hidden charge.",
+    q: "What is the RWF 100,000 commitment fee?",
+    a: "The RWF 100,000 commitment fee demonstrates your intention to participate in a housing project and forms part of the onboarding process. Before paying, you should review the terms explaining how the fee is used, whether it counts toward your project contribution, and any refund conditions.",
   },
   {
-    q: "How are payments handled and approved on the platform?",
-    a: "Investors make their payment using the approved channel, then upload proof of payment. The proof is reviewed by the responsible admin team so the investor status, records, and tier progression can be validated correctly.",
+    q: "How are payments handled and verified on the platform?",
+    a: "Members make payments through the approved payment channels and upload proof of payment to the platform. The responsible administration team reviews and verifies each payment before updating the member's contribution records and participation status. The committee formed by group members oversees financial reporting to support transparency and accountability.",
   },
   {
     q: "Who designs and constructs the houses?",
-    a: "Urban Evolution Group works with architects, engineers, and regulated construction partners. Designs are prepared in line with local standards, land characteristics, and the agreed direction of the investors, while licensed builders execute the work.",
+    a: "Urban Evolution Group coordinates architects, engineers, and qualified construction partners throughout the project, from design to delivery. Designs consider the land, applicable building standards, and the group's agreed needs. Construction follows the approved plans, with professional supervision and progress updates for members.",
   },
   {
-    q: "Can people really invest together as a group?",
-    a: "Yes. That is one of the main ideas of the TURANEZA App. Members can create or join a group, coordinate contributions, follow common rules, and work together toward shared housing and community investment goals.",
+    q: "Can people invest together as a group?",
+    a: "Yes. TURANEZA brings people together in structured investment groups to pool resources for shared housing projects. Members contribute according to their agreements and form a committee to represent the group, monitor progress, and oversee the use of funds. Urban Evolution Group coordinates the project from planning to delivery.",
   },
   {
-    q: "Why are transparency and communication so important in a group?",
-    a: "Because group members are co-investors and may later become neighbors in the same community. Clear communication, honest records, and visible approvals protect trust and reduce future disputes.",
+    q: "How does TURANEZA support transparency and accountability?",
+    a: "Each group forms a committee of its members to represent their interests and help oversee the project and its funds. Clear contribution records, documented decisions, financial reports, and regular progress updates help members understand how their money is used. Open communication between the committee, members, and Urban Evolution Group builds trust and helps resolve concerns early.",
   },
 ];
 
