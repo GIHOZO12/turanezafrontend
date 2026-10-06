@@ -616,21 +616,42 @@ const AuthPage = () => {
         googleIdentityInitialized = true;
       }
       googleButtonRef.current.innerHTML = "";
+      // Google renders this button at a fixed pixel width, so a hardcoded
+      // value (it was 360) overflows narrow phones — on a 360px screen only
+      // ~264px is usable inside the page and card padding. Measure the
+      // container instead and clamp to the 200-400px range Google accepts.
+      const available = Math.round(googleButtonRef.current.offsetWidth) || 280;
       window.google.accounts.id.renderButton(googleButtonRef.current, {
-        theme: "outline", size: "large", shape: "pill", text: mode === "signup" ? "signup_with" : "signin_with", width: 360,
+        theme: "outline",
+        size: "medium",
+        shape: "pill",
+        text: mode === "signup" ? "signup_with" : "signin_with",
+        width: Math.max(200, Math.min(400, available)),
       });
       setGoogleError(null);
     };
-    if (window.google?.accounts?.id) return renderGoogleButton();
-    if (googleScriptLoading) return;
+
+    // Re-measure on resize/rotate so the button keeps fitting its container.
+    const handleResize = () => renderGoogleButton();
+
+    if (window.google?.accounts?.id) {
+      renderGoogleButton();
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }
+    if (googleScriptLoading) return undefined;
     googleScriptLoading = true;
     const script = document.createElement("script");
     script.src = "https://accounts.google.com/gsi/client";
     script.async = true;
     script.defer = true;
-    script.onload = renderGoogleButton;
+    script.onload = () => {
+      renderGoogleButton();
+      window.addEventListener("resize", handleResize);
+    };
     script.onerror = () => setGoogleError("Unable to load Google sign-in.");
     document.body.appendChild(script);
+    return () => window.removeEventListener("resize", handleResize);
   }, [googleClientId, mode, navigate]);
 
   const activeStageLabel = useMemo(() => membershipStages.find((item) => item.id === activeTier)?.label || membershipStages[0].label, [activeTier]);
@@ -647,9 +668,11 @@ const AuthPage = () => {
   const renderGoogleFallback = () => (
     <>
       {googleClientId && !googleError ? (
-        <div className="flex w-full justify-center"><div ref={googleButtonRef} className="w-full max-w-sm" /></div>
+        <div className="flex w-full max-w-full justify-center overflow-hidden">
+          <div ref={googleButtonRef} className="w-full max-w-xs" />
+        </div>
       ) : (
-        <button type="button" onClick={handleGoogleAuth} className="flex w-full items-center justify-center gap-3 rounded-pill border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-700 transition duration-cozy ease-cozy hover:border-primary/60 hover:text-primary">
+        <button type="button" onClick={handleGoogleAuth} className="flex w-full items-center justify-center gap-2 rounded-pill border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 transition duration-cozy ease-cozy hover:border-primary/60 hover:text-primary sm:gap-3 sm:px-5 sm:py-3 sm:text-sm">
           <GoogleIcon />
           <span>Continue with Google</span>
         </button>
