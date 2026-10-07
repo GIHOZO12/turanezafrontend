@@ -354,7 +354,11 @@ const LandingPage = () => {
               <div className="flex h-12 w-12 items-center justify-center rounded-2x text-white shadow-card transition duration-cozy ease-cozy hover:scale-105">
 <img src={logo} alt="Urban Evolution Group logo" className="h-full w-full rounded-full" />
               </div>
+
+       
+            
               <div>
+                <p className="text-md text-black">Urban Evolution Group</p>
                 <p className="text-sm text-slate-500">Turaneza App</p>
               </div>
             </div>
