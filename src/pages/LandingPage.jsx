@@ -615,7 +615,7 @@ const LandingPage = () => {
                   <span className="inline-flex h-2.5 w-2.5 rounded-full" />
                   Rwanda's collaborative housing future
                 </span>
-                <h1 className="mt-6 text-md font-medium  sm:text-md lg:text-md">
+                <h1 className="mt-6  text-md font-medium  sm:text-lg lg:text-lg text-yellow-400">
                   Co-invest in modern multi-family and community Housing
                 </h1>
                 <p className="mt-6 text-md font-normal text-white/90 sm:text-sm">

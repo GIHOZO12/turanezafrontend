@@ -176,7 +176,7 @@ const InvestmentJourneyPanel = () => (
       <div className="space-y-8">
         <div className="space-y-5">
           <div className="inline-flex items-center gap-2 rounded-pill border border-primary/15 bg-primary/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.26em] text-primary">
-            <span className="inline-flex h-2.5 w-2.5 rounded-full bg-primary" aria-hidden="true" />
+            <span className="inline-flex h-2.5 w-2.5 rounded-full" aria-hidden="true" />
             TURANEZA App
           </div>
           <div className="space-y-3">
@@ -698,7 +698,7 @@ const AuthPage = () => {
                 <p className="text-sm font-semibold uppercase tracking-widest text-primary">Join Urban Evolution Group</p>
                 <h2 className="text-2xl font-semibold text-slate-900 sm:text-3xl">{authTitle}</h2>
               </div>
-              <span className="rounded-pill bg-sunshine/20 px-4 py-2 text-xs font-semibold text-sunshine">{mode === "reset" ? "Secure recovery" : "Stay signed in for 7 days"}</span>
+              
             </div>
 
             <div className="flex rounded-pill bg-porcelain p-1 text-sm font-semibold text-slate-500">
