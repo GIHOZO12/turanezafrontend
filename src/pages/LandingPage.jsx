@@ -612,16 +612,14 @@ const LandingPage = () => {
             <div className="relative mx-auto flex max-w-7xl flex-col gap-16 px-4 py-24 sm:px-6 lg:flex-row lg:items-center lg:py-32 lg:px-8">
               <div className="max-w-xl">
                 <span className="inline-flex items-center gap-2 rounded-pill bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur">
-                  <span className="inline-flex h-2.5 w-2.5 rounded-full bg-sunshine" />
+                  <span className="inline-flex h-2.5 w-2.5 rounded-full" />
                   Rwanda's collaborative housing future
                 </span>
-                <h1 className="mt-6 text-4xl font-semibold leading-tight sm:text-5xl lg:text-6xl">
-                  Co-invest in modern community housing.
+                <h1 className="mt-6 text-md font-medium  sm:text-md lg:text-md">
+                  Co-invest in modern multi-family and community Housing
                 </h1>
-                <p className="mt-6 text-lg font-light text-white/90 sm:text-xl">
-                  Together we build a future of affordable and community-driven
-                  living. Join Urban Evolution Group, Use TURANEZA App to unlock
-                  high-impact housing opportunities across Rwanda.
+                <p className="mt-6 text-md font-normal text-white/90 sm:text-sm">
+Register your plot on TURANEZA. We’ll help you find co-investors to build vertically, with each participant owning an apartment.
                 </p>
                 <div className="mt-8 flex flex-wrap gap-4">
                   <button
@@ -646,37 +644,10 @@ const LandingPage = () => {
                       Our Promise
                     </p>
                     <p className="mt-3 font-serif text-base text-white/90">
-                      Transparent co-ownership structures, help people to create
-                      and choose groups that fit their goals and make possible
-                      to live in modern, affordable apartments near their
-                      activities.
+                    A transparent journey to investing in groups that match your goals, helping you own a modern, affordable apartment close to your daily activities. 
                     </p>
                   </div>
-                  <div className="rounded-card bg-white/10 p-5 text-sm sm:p-6">
-                    <p className="text-mint font-semibold uppercase tracking-wider">
-                      Impact Snapshot
-                    </p>
-                    <ul className="mt-4 space-y-3 text-white/90">
-                      <li className="flex items-center gap-3">
-                        <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-lg font-semibold">
-                          1.2k
-                        </span>
-                        <span>Households reached through co-investment</span>
-                      </li>
-                      <li className="flex items-center gap-3">
-                        <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-lg font-semibold">
-                          92%
-                        </span>
-                        <span>Average occupancy in first 12 months</span>
-                      </li>
-                      <li className="flex items-center gap-3">
-                        <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-lg font-semibold">
-                          65%
-                        </span>
-                        <span>Projects under construction works</span>
-                      </li>
-                    </ul>
-                  </div>
+                  
                 </div>
               </div>
             </div>
@@ -737,23 +708,17 @@ const LandingPage = () => {
                   with shared benefits for residents, investors, and the
                   environment. */}
                   <p>
-                    Urban Evolution Group through TURANEZA App is building
-                    Rwanda’s next generation of affordable housing where dignity,
-                    community, and sustainability come first.
+                TURANEZA App, developed by Urban Evolution Group Ltd, connects landowners with people who want to live in the same location. 
                   </p>
                   <p>
-                    We organize collaborative investment groups that turn shared
-                    contributions into real homes, real ownership, and real
-                    progress. With trusted local partners and energy-smart
-                    design, we create inclusive communities that benefit
-                    residents, investors, and the environment for years to come.
+                    
+They form groups and pool their resources to build housing with several apartments, where members can own or rent a unit.
+Urban Evolution Group Ltd manages the whole building process, from designing the homes to handing them over.
+This approach makes housing more affordable, uses land efficiently, and helps build sustainable communities in the city.
+
                   </p>
                 </div>
-                <p className="mt-4 text-base text-slate-600">
-                  By combining cooperative financing, local partnerships, and
-                  smart design, we deliver space-efficient developments that are
-                  socially inclusive and economically rewarding.
-                </p>
+              
               </div>
               <div className="grid gap-6 sm:grid-cols-2">
                 {storyHighlights.map((story) => (

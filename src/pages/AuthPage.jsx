@@ -33,8 +33,8 @@ const stageStyles = {
   teal: { border: "border-teal-300", badge: "bg-teal-600", soft: "bg-teal-50", text: "text-teal-700" },
 };
 const journeyStages = [
-  { id: 1, title: "Sign Up / Login", tone: "green", detail: "Create an account, verify email, and prepare for KYC onboarding." },
-  { id: 2, title: "Become a Member", tone: "blue", detail: "Pay the commitment fee and move from Visitor to Member status." },
+  { id: 1, title: "Sign Up / Login", tone: "green", detail: "Create an account, verify email, and get welcomed.." },
+  { id: 2, title: "Become a Member", tone: "blue", detail: "Pay the commitment fee and move from member to aspiring investor. " },
   { id: 3, title: "Exploration & Education", tone: "amber", detail: "Study group rules, designs, legal standards, and investor responsibilities." },
   { id: 4, title: "Create or Join a Group", tone: "violet", detail: "Launch a new investment group or join one that matches your goals." },
   { id: 5, title: "Understand & Sign Compliance", tone: "teal", detail: "Review legal agreements, confirm compliance, and accept platform standards." },
