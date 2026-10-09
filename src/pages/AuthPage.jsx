@@ -26,41 +26,45 @@ const resetDefaults = { password: "", confirmPassword: "" };
 const inputClass = "mt-2 w-full rounded-xl border border-slate-200 bg-porcelain px-4 py-3 text-sm text-slate-700 outline-none transition duration-cozy ease-cozy focus:border-primary focus:ring-2 focus:ring-primary/30";
 const primaryButtonClass = "w-full rounded-pill bg-primary px-5 py-3 text-sm font-semibold text-white shadow-card transition duration-cozy ease-cozy hover:-translate-y-0.5 hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-70";
 const stageStyles = {
-  green: { border: "border-emerald-300", badge: "bg-emerald-600", soft: "bg-emerald-50", text: "text-emerald-700" },
-  blue: { border: "border-primary/40", badge: "bg-primary", soft: "bg-blue-50", text: "text-primary" },
-  amber: { border: "border-orange-300", badge: "bg-orange-500", soft: "bg-orange-50", text: "text-orange-600" },
-  violet: { border: "border-violet-300", badge: "bg-violet-600", soft: "bg-violet-50", text: "text-violet-700" },
-  teal: { border: "border-teal-300", badge: "bg-teal-600", soft: "bg-teal-50", text: "text-teal-700" },
+  foundation: { border: "border-primary/30", badge: "bg-primary", soft: "bg-blue-50", text: "text-primary" },
+  planning: { border: "border-mint/40", badge: "bg-mint", soft: "bg-emerald-50", text: "text-emerald-700" },
+  governance: { border: "border-primary/30", badge: "bg-primary", soft: "bg-blue-50", text: "text-primary" },
+  finance: { border: "border-mint/40", badge: "bg-mint", soft: "bg-emerald-50", text: "text-emerald-700" },
+  delivery: { border: "border-primary/30", badge: "bg-primary", soft: "bg-blue-50", text: "text-primary" },
 };
 const journeyStages = [
-  { id: 1, title: "Sign Up / Login", tone: "green", detail: "Create an account, verify email, and get welcomed.." },
-  { id: 2, title: "Become a Member", tone: "blue", detail: "Pay the commitment fee and move from member to aspiring investor. " },
-  { id: 3, title: "Exploration & Education", tone: "amber", detail: "Study group rules, designs, legal standards, and investor responsibilities." },
-  { id: 4, title: "Create or Join a Group", tone: "violet", detail: "Launch a new investment group or join one that matches your goals." },
-  { id: 5, title: "Understand & Sign Compliance", tone: "teal", detail: "Review legal agreements, confirm compliance, and accept platform standards." },
-  { id: 6, title: "Pay Construction Contribution", tone: "teal", detail: "Track staged contributions and unlock investor badge upgrades." },
-  { id: 7, title: "Pay Project Management Fee", tone: "amber", detail: "Settle the 5% management fee generated from the project building cost." },
-  { id: 8, title: "Become a Property Owner", tone: "blue", detail: "Receive unit or house ownership confirmation when all obligations are complete." },
-  { id: 9, title: "Congratulations", tone: "green", detail: "Download final documents and enter the TURANEZA community as an owner." },
+  { id: 1, title: "Register a Land", tone: "foundation", detail: "A landowner registers their plot or property on TURANEZA." },
+  { id: 2, title: "Review and Approve", tone: "foundation", detail: "The Super Admin checks whether the property meets the required standards and regulations. If approved, it is published on the platform." },
+  { id: 3, title: "Create the Investment Group", tone: "planning", detail: "The Super Admin creates a group for the project. A land surveyor and architect study the plot and prepare proposed building designs." },
+  { id: 4, title: "Join and Choose a Design", tone: "planning", detail: "Interested investors join the group, review the designs, discuss them, and agree on their preferred design." },
+  { id: 5, title: "Agree to the Rules", tone: "governance", detail: "Investors read, understand, and accept the group and project rules." },
+  { id: 6, title: "Choose an Investors' Committee", tone: "governance", detail: "Investors select a committee to represent them and help monitor how project funds are used." },
+  { id: 7, title: "Calculate the Project Cost", tone: "finance", detail: "The engineering team prepares the structural, electrical, plumbing, and other technical plans. It also prepares the Bill of Quantities (BOQ), helping estimate each investor's contribution." },
+  { id: 8, title: "Confirm Participation", tone: "finance", detail: "Interested investors pay a  commitment fee of RWF 100,000 to confirm their interest in the project." },
+  { id: 9, title: "Pay the Contributions", tone: "finance", detail: "When the project is ready, investors pay their agreed contributions. A 2 to 5% project management fee is also payable, and the commitment fee is refunded according to the agreed terms." },
+  { id: 10, title: "Select a Construction Company", tone: "delivery", detail: "Urban Evolution Group works with the investors' committee to select and contract a qualified construction company." },
+  { id: 11, title: "Help Oversee Purchases", tone: "delivery", detail: "The committee helps oversee the selection of construction materials and services to support transparency." },
+  { id: 12, title: "Start Construction", tone: "delivery", detail: "The construction company builds according to the approved plans, budget, quality standards, and schedule." },
+  { id: 13, title: "Manage and Monitor the Work", tone: "delivery", detail: "Urban Evolution Group coordinates construction, checks quality, and shares regular updates." },
+  { id: 14, title: "Follow Project Progress", tone: "delivery", detail: "Investors follow construction progress and receive project information through TURANEZA and other communication channels." },
+  { id: 15, title: "Complete and Hand Over the Building", tone: "delivery", detail: "When construction is finished, the construction company hands over the building to Urban Evolution Group." },
+  { id: 16, title: "Allocate and Hand Over Apartments", tone: "delivery", detail: "Urban Evolution Group and the investors' committee arrange the allocation and handover of apartments according to each investor's contribution and project agreement." },
+  { id: 17, title: "Give the Landowner Their Apartments", tone: "delivery", detail: "The landowner receives one or more apartments based on the agreed value of their land or property." },
+  { id: 18, title: "Provide Ownership Documents", tone: "delivery", detail: "Each investor receives the required documents confirming their apartment ownership rights, following applicable laws and registration requirements." },
+  { id: 19, title: "Live in, Rent Out, or Sell", tone: "delivery", detail: "Owners can live in their apartments or use them as investments. They may also agree with Urban Evolution Group to manage or advertise their properties through TURANEZA." },
 ];
-const educationHighlights = [
-  "Explore available investment groups",
-  "Read group guidelines and investor rules",
-  "Review architectural designs and layouts",
-  "Choose a suitable house or apartment design",
-  "Accept legal, compliance, and investor obligations",
+const journeyPhases = [
+  { label: "Property Intake", range: "01-02", tone: "foundation", description: "Land is submitted, checked, and published when it qualifies." },
+  { label: "Design Alignment", range: "03-04", tone: "planning", description: "The project group forms around a surveyed plot and proposed designs." },
+  { label: "Investor Governance", range: "05-06", tone: "governance", description: "Rules and Regulation apply." },
+  { label: "Budget and Commitment", range: "07-09", tone: "finance", description: "Technical plans, BOQ, fees, and contributions become clear." },
+  { label: "Construction to Ownership", range: "10-19", tone: "delivery", description: "Procurement, building, handover, ownership documents, and property use are completed." },
 ];
-const investorTiers = [
-  { label: "Silver Investor", fraction: "1/4 paid", accent: "from-slate-500 to-slate-300" },
-  { label: "Golden Investor", fraction: "2/4 paid", accent: "from-amber-500 to-yellow-300" },
-  { label: "Diamond Investor", fraction: "3/4 paid", accent: "from-sky-500 to-cyan-300" },
-  { label: "Platinum Investor", fraction: "4/4 paid", accent: "from-slate-300 to-slate-100" },
-];
-const journeyFeatureCards = [
-  { title: "Design Gallery", copy: "Browse house and apartment concepts before joining a group.", icon: "owner" },
-  { title: "Document Review", copy: "Open guidelines, legal files, and compliance PDFs in one place.", icon: "compliance" },
-  { title: "Contribution Dashboard", copy: "Track installments, invoices, history, and investor badge upgrades.", icon: "payment" },
-  { title: "Group Collaboration", copy: "Create or join groups with discussions, limits, and shared milestones.", icon: "group" },
+const journeyHighlights = [
+  { value: "RWF 100,000", label: " commitment fee" },
+  { value: "2-5%", label: "Project management fee" },
+  { value: "BOQ", label: "Transparent cost estimate" },
+  { value: "19", label: "Clear journey steps" },
 ];
 
 const normaliseTier = (role) => membershipStages.find((stage) => stage.id === role)?.id || "member";
@@ -150,17 +154,17 @@ const JourneyBadgeIcon = ({ type }) => {
   );
 };
 
-const JourneyStageCard = ({ stage }) => {
+const JourneyStageCard = ({ stage, compact = false }) => {
   const style = stageStyles[stage.tone];
   return (
-    <div className={clsx("rounded-[26px] border bg-white/90 p-5 shadow-card backdrop-blur-sm", style.border)}>
-      <div className="flex items-start gap-4">
-        <span className={clsx("inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-base font-bold text-white shadow-lg", style.badge)}>
+    <div className={clsx("h-full rounded-2xl border bg-white/90 p-4 shadow-card backdrop-blur-sm transition duration-cozy ease-cozy hover:-translate-y-1", style.border, compact ? "sm:p-4" : "sm:p-5")}>
+      <div className="flex items-start gap-3">
+        <span className={clsx("inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white shadow-lg", style.badge)}>
           {stage.id}
         </span>
-        <div className="space-y-2">
-          <p className={clsx("text-sm font-semibold uppercase tracking-[0.2em]", style.text)}>{stage.title}</p>
-          <p className="text-sm leading-7 text-slate-600">{stage.detail}</p>
+        <div className="min-w-0 space-y-2">
+          <p className={clsx("text-sm font-semibold leading-6", style.text)}>{stage.title}</p>
+          <p className={clsx("text-sm leading-7 text-slate-600", compact && "text-xs leading-6")}>{stage.detail}</p>
         </div>
       </div>
     </div>
@@ -168,138 +172,94 @@ const JourneyStageCard = ({ stage }) => {
 };
 
 const InvestmentJourneyPanel = () => (
-  <section className="relative overflow-hidden rounded-[34px] border border-white/70 bg-white/85 p-6 shadow-card backdrop-blur-sm sm:p-8 lg:p-10">
-    <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(30,136,229,0.16),_transparent_30%),radial-gradient(circle_at_85%_10%,_rgba(251,191,36,0.18),_transparent_24%),radial-gradient(circle_at_50%_100%,_rgba(52,211,153,0.12),_transparent_30%),linear-gradient(180deg,_rgba(255,255,255,0.98),_rgba(244,248,252,0.96))]" aria-hidden="true" />
-    <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-primary/35 to-transparent" aria-hidden="true" />
-
-    <div className="grid gap-8 xl:grid-cols-[1.2fr,0.8fr]">
-      <div className="space-y-8">
-        <div className="space-y-5">
-          <div className="inline-flex items-center gap-2 rounded-pill border border-primary/15 bg-primary/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.26em] text-primary">
-            <span className="inline-flex h-2.5 w-2.5 rounded-full" aria-hidden="true" />
-            TURANEZA App
-          </div>
-          <div className="space-y-3">
-            <h1 className="max-w-4xl text-3xl font-semibold leading-tight text-slate-900 sm:text-4xl lg:text-[2.6rem]">
-              Investment Journey Progress
-            </h1>
-            <p className="max-w-3xl text-sm leading-7 text-slate-600 sm:text-base">
-              A guided path from registration to ownership, with a clearer view of membership, education, compliance, contributions, and final property transfer.
-            </p>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-3">
-            <div className="rounded-2xl border border-primary/15 bg-white/80 p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Journey Length</p>
-              <p className="mt-2 text-2xl font-semibold text-slate-900">9 stages</p>
-              <p className="mt-1 text-xs leading-5 text-slate-500">Structured onboarding to ownership.</p>
+  <section className="relative overflow-hidden rounded-[34px] border border-white/70 bg-white/90 shadow-card backdrop-blur-sm">
+    <div className="absolute inset-0 -z-10 bg-[linear-gradient(135deg,_rgba(255,255,255,0.98)_0%,_rgba(239,247,255,0.96)_52%,_rgba(236,253,245,0.92)_100%)]" aria-hidden="true" />
+    <div className="grid gap-0 xl:grid-cols-[0.72fr,1fr]">
+      <div className="bg-primary p-6 text-white sm:p-8 lg:p-10">
+        <div className="flex h-full flex-col justify-between gap-10">
+          <div className="space-y-6">
+            <div className="inline-flex items-center gap-2 rounded-pill border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-white">
+              TURANEZA Investment
             </div>
-            <div className="rounded-2xl border border-emerald-200 bg-white/80 p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">Investor Tiers</p>
-              <p className="mt-2 text-2xl font-semibold text-slate-900">4 levels</p>
-              <p className="mt-1 text-xs leading-5 text-slate-500">Silver to Platinum contribution milestones.</p>
+            <div className="space-y-4">
+              <h1 className="max-w-xl text-3xl font-semibold leading-tight text-white sm:text-4xl lg:text-[2.65rem]">
+                Investment Journey
+              </h1>
+              <p className="max-w-xl text-sm leading-7 text-white/85 sm:text-base">
+                From a registered plot to apartment ownership, every step is visible, reviewed, and connected to the people responsible for delivery.
+              </p>
             </div>
-            <div className="rounded-2xl border border-orange-200 bg-white/80 p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-orange-600">Core Focus</p>
-              <p className="mt-2 text-2xl font-semibold text-slate-900">Compliance</p>
-              <p className="mt-1 text-xs leading-5 text-slate-500">Legal clarity and controlled access at each step.</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="relative">
-          <div className="absolute bottom-0 left-[21px] top-0 hidden w-px bg-gradient-to-b from-primary/40 via-teal-300 to-emerald-300 lg:block" aria-hidden="true" />
-          <div className="space-y-4">
-            {journeyStages.map((stage) => (
-              <div key={stage.id} className="relative lg:pl-16">
-                <div className="absolute left-0 top-5 hidden lg:block">
-                  <span className={clsx("inline-flex h-11 w-11 items-center justify-center rounded-full text-sm font-bold text-white shadow-lg ring-4 ring-white", stageStyles[stage.tone].badge)}>
-                    {stage.id}
-                  </span>
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
+              {journeyHighlights.map((item) => (
+                <div key={item.label} className="rounded-2xl border border-white/20 bg-white/10 p-4">
+                  <p className="text-2xl font-semibold text-white">{item.value}</p>
+                  <p className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-white/80">{item.label}</p>
                 </div>
-                <JourneyStageCard stage={stage} />
-              </div>
-            ))}
+              ))}
+            </div>
+          </div>
+          <div className="rounded-3xl border border-white/20 bg-white/10 p-5">
+            <p className="text-sm font-semibold text-white">Built for shared trust</p>
+            <p className="mt-2 text-sm leading-7 text-white/85">
+              Landowners, investors, committees, engineers, and Urban Evolution Group each have a clear place in the process.
+            </p>
           </div>
         </div>
       </div>
 
-      <div className="space-y-6">
-        <div className={clsx("rounded-[28px] border p-6 shadow-card", stageStyles.amber.border, stageStyles.amber.soft)}>
-          <div className="flex items-start gap-4">
-            <span className={clsx("inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-white shadow-lg", stageStyles.amber.badge)}>
-              <JourneyBadgeIcon type="explore" />
-            </span>
-            <div className="space-y-2">
-              <p className={clsx("text-sm font-semibold uppercase tracking-[0.2em]", stageStyles.amber.text)}>Exploration & Education</p>
-              <p className="text-sm leading-7 text-slate-600">Help aspiring investors learn before they commit, with visible design, rules, and legal preparation.</p>
-            </div>
-          </div>
-          <div className="mt-5 space-y-3">
-            {educationHighlights.map((item, index) => (
-              <div key={item} className="flex items-start gap-3 rounded-2xl border border-orange-200 bg-white/85 px-4 py-3">
-                <span className="mt-0.5 inline-flex h-7 w-7 items-center justify-center rounded-full bg-orange-100 text-xs font-semibold text-orange-600">
-                  {index + 1}
-                </span>
-                <p className="text-sm leading-6 text-slate-600">{item}</p>
+      <div className="space-y-8 p-6 sm:p-8 lg:p-10">
+        <div className="grid gap-4 md:grid-cols-5">
+          {journeyPhases.map((phase) => {
+            const style = stageStyles[phase.tone];
+            return (
+              <div key={phase.label} className={clsx("rounded-2xl border p-4", style.border, style.soft)}>
+                <p className={clsx("text-xs font-semibold uppercase tracking-[0.18em]", style.text)}>{phase.range}</p>
+                <p className="mt-2 text-sm font-semibold leading-6 text-slate-900">{phase.label}</p>
+                <p className="mt-2 text-xs leading-5 text-slate-600">{phase.description}</p>
               </div>
-            ))}
-          </div>
-          <div className="mt-5 rounded-2xl bg-gradient-to-r from-orange-100 via-amber-50 to-orange-100 px-5 py-4 text-center text-sm font-semibold text-slate-800">
-            You become an Aspiring Investor
-          </div>
+            );
+          })}
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          {journeyFeatureCards.map((card) => (
-            <div key={card.title} className="rounded-[24px] border border-slate-200 bg-white/90 p-5 shadow-card">
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-900 text-white">
-                <JourneyBadgeIcon type={card.icon} />
-              </span>
-              <p className="mt-4 text-sm font-semibold uppercase tracking-[0.18em] text-slate-800">{card.title}</p>
-              <p className="mt-2 text-sm leading-6 text-slate-600">{card.copy}</p>
-            </div>
+        <div className="grid gap-4 lg:grid-cols-2">
+          <div className="lg:col-span-2">
+            <JourneyStageCard stage={journeyStages[0]} />
+          </div>
+          <div className="lg:col-span-2">
+            <JourneyStageCard stage={journeyStages[1]} />
+          </div>
+          {journeyStages.slice(2).map((stage) => (
+            <JourneyStageCard key={stage.id} stage={stage} compact />
           ))}
         </div>
 
-        <div className={clsx("rounded-[28px] border p-6 shadow-card", stageStyles.teal.border)}>
-          <div className="flex items-start justify-between gap-4">
+        <div className="grid gap-4 rounded-3xl border border-slate-200 bg-white/80 p-4 sm:grid-cols-3">
+          <div className="flex items-start gap-3">
+            <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary text-white">
+              <JourneyBadgeIcon type="owner" />
+            </span>
             <div>
-              <p className={clsx("text-sm font-semibold uppercase tracking-[0.2em]", stageStyles.teal.text)}>Contribution Milestones</p>
-              <p className="mt-2 text-sm leading-7 text-slate-600">Construction contributions unlock investor recognition step by step.</p>
+              <p className="text-sm font-semibold text-slate-900">Landowner value</p>
+              <p className="mt-1 text-xs leading-5 text-slate-600">Receives apartments based on the agreed land value.</p>
             </div>
-            <span className="rounded-pill bg-teal-100 px-3 py-1 text-xs font-semibold text-teal-700">4 tiers</span>
           </div>
-          <div className="mt-5 space-y-4">
-            {investorTiers.map((tier, index) => (
-              <div key={tier.label} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <p className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-800">{tier.label}</p>
-                    <p className="mt-1 text-xs text-slate-500">Unlocked when the investor reaches {tier.fraction.replace(" paid", "")} of the construction target.</p>
-                  </div>
-                  <span className={clsx("inline-flex h-11 min-w-[5.5rem] items-center justify-center rounded-xl bg-gradient-to-r px-3 text-sm font-semibold text-white shadow-sm", tier.accent)}>
-                    {tier.fraction}
-                  </span>
-                </div>
-                <div className="mt-4 h-2.5 overflow-hidden rounded-full bg-slate-200">
-                  <div className={clsx("h-full rounded-full bg-gradient-to-r", tier.accent)} style={{ width: `${(index + 1) * 25}%` }} />
-                </div>
-              </div>
-            ))}
+          <div className="flex items-start gap-3">
+            <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-mint text-white">
+              <JourneyBadgeIcon type="group" />
+            </span>
+            <div>
+              <p className="text-sm font-semibold text-slate-900">Committee oversight</p>
+              <p className="mt-1 text-xs leading-5 text-slate-600">Investors help monitor funds, purchases, and delivery.</p>
+            </div>
           </div>
-        </div>
-
-        <div className="rounded-[28px] border border-emerald-200 bg-white/90 p-6 shadow-card">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-700">Journey Summary</p>
-          <div className="mt-4 grid gap-3">
-            {journeyStages.map((stage) => (
-              <div key={stage.id} className="flex items-center gap-3 rounded-2xl bg-slate-50 px-4 py-3">
-                <span className={clsx("inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white", stageStyles[stage.tone].badge)}>
-                  {stage.id}
-                </span>
-                <p className="text-sm leading-6 text-slate-600">{stage.title}</p>
-              </div>
-            ))}
+          <div className="flex items-start gap-3">
+            <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary text-white">
+              <JourneyBadgeIcon type="compliance" />
+            </span>
+            <div>
+              <p className="text-sm font-semibold text-slate-900">Ownership proof</p>
+              <p className="mt-1 text-xs leading-5 text-slate-600">Each investor receives documents for their ownership rights.</p>
+            </div>
           </div>
         </div>
       </div>

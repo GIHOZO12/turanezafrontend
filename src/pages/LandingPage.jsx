@@ -615,10 +615,10 @@ const LandingPage = () => {
                   <span className="inline-flex h-2.5 w-2.5 rounded-full" />
                   Rwanda's collaborative housing future
                 </span>
-                <h1 className="mt-6  text-md font-medium  sm:text-lg lg:text-lg text-yellow-400">
+                <h1 className="mt-6 text-2xl font-semibold leading-tight text-white sm:text-3xl lg:text-4xl">
                   Co-invest in modern multi-family and community Housing
                 </h1>
-                <p className="mt-6 text-md font-normal text-white/90 sm:text-sm">
+                <p className="mt-6 text-base font-normal leading-8 text-white/90 sm:text-lg lg:text-xl">
 Register your plot on TURANEZA. We’ll help you find co-investors to build vertically, with each participant owning an apartment.
                 </p>
                 <div className="mt-8 flex flex-wrap gap-4">
