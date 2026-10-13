@@ -655,36 +655,60 @@ Register your plot on TURANEZA. We’ll help you find co-investors to build vert
 
           <section className="bg-white py-16 sm:py-20">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+              <div className="mb-10 max-w-2xl">
+                <p className="text-sm font-semibold uppercase tracking-widest text-primary">
+                  See how Turaneza works
+                </p>
+                <h2 className="mt-3 text-3xl font-semibold text-slate-900 sm:text-4xl">
+                  Get to know the app
+                </h2>
+                <p className="mt-4 text-base leading-7 text-slate-600">
+                  Learn how Turaneza brings landowners and future residents together to build homes.
+                </p>
+              </div>
               <div className="grid gap-8 lg:grid-cols-2">
-                <div className="overflow-hidden rounded-card bg-white shadow-2xl">
-                  <div className="h-[22rem] w-full bg-black sm:h-[26rem] lg:h-[30rem]">
+                <article className="overflow-hidden rounded-card bg-white shadow-2xl">
+                  <div className="aspect-video w-full bg-black">
                     <iframe
                       className="h-full w-full"
                       src="https://www.youtube.com/embed/V8G9bNKzk_s"
-                      title="Urban Evolution Group RWANDA - TURANEZA App: GUHURIRA HAMWE HAKUBAKWA INZU ZIGEZWEHO KU BUTAKA BUTO."
+                      title="Turaneza App, clearly explained"
                       frameBorder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       referrerPolicy="strict-origin-when-cross-origin"
                       allowFullScreen
                     />
                   </div>
-                  <div className="bg-white px-5 py-4 sm:px-6">
-                    <p className="text-base font-semibold text-slate-900">
-                      Turaneza App, clearly explained 
-                    </p>
+                  <div className="px-5 py-4 sm:px-6">
+                    <h3 className="text-base font-semibold text-slate-900">
+                      Turaneza App, clearly explained
+                    </h3>
                     <p className="mt-2 text-sm text-slate-600">
-                      
+                      Discover the idea behind collaborative housing in Rwanda.
                     </p>
                   </div>
-                </div>
-                <div className="overflow-hidden rounded-card bg-white shadow-2xl">
-                  <div className="bg-white px-5 py-4 sm:px-6">
-                    <p className="text-base font-semibold text-slate-900">
-                      Explore the Turaneza App navigation journey
-                    </p>
-                    <p className="mt-2 text-sm text-slate-600"></p>
+                </article>
+                <article className="overflow-hidden rounded-card bg-white shadow-2xl">
+                  <div className="aspect-video w-full bg-black">
+                    <iframe
+                      className="h-full w-full"
+                      src="https://www.youtube.com/embed/Ax1Ej4AOLEA"
+                      title="Explore the Turaneza App navigation journey"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerPolicy="strict-origin-when-cross-origin"
+                      allowFullScreen
+                    />
                   </div>
-                </div>
+                  <div className="px-5 py-4 sm:px-6">
+                    <h3 className="text-base font-semibold text-slate-900">
+                     Watch the Interview, the Founder is explaining the Turaneza project in deep
+                    </h3>
+                    <p className="mt-2 text-sm text-slate-600">
+                      Gain more information about project
+                    </p>
+                  </div>
+                </article>
               </div>
             </div>
           </section>
