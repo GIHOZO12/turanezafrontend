@@ -11,8 +11,8 @@ module.exports = {
         porcelain: '#F9FAFB',
       },
       fontFamily: {
-        sans: ['Poppins', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        serif: ['Merriweather', 'ui-serif', 'Georgia', 'serif'],
+        sans: ['"Source Sans Pro"', '"Source Sans 3"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        serif: ['"Source Sans Pro"', '"Source Sans 3"', 'sans-serif'],
       },
       borderRadius: {
         pill: '9999px',
